@@ -1,5 +1,7 @@
 # Riot Grid2
 
+(potential successor to [riot-grid](https://github.com/crisward/riot-grid))
+
 Trying to make it display millions of columns too.
 
 I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
