@@ -57,6 +57,7 @@ grid2
     
     @on 'mount',->
       @gridbody = @root.querySelector(".gridbody")
+      @update()
       
     @on 'update',->
       return if !@gridbody || !opts.data || !opts.columns
