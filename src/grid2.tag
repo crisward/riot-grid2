@@ -1,71 +1,74 @@
 grid2
-  .gridwrap
-  
-    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;")
+  .gridwrap(style="height:{opts.height}px")
+    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .scrollArea(style="width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
-        .cell(each="{visCells.main}",style="top:{top}px;left:{left}px;width:{width}px;bottom:{bottom}px;") {text}
+        .cell(each="{visCells.main}",style="top:{top}px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
     
     .gridbody(style="height:{rowHeight}px")
       .header(style="top:0px;left:{0-gridbody.scrollLeft}px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",style="top:0px;left:{left}px;width:{width}px;bottom:{bottom}px;") {text}
+        .headercell(each="{headers.main}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
     
-    .gridbody(style="width:{fixedLeftWidth}px;")
-      .fixedLeft(style="left:0px;top:{0-gridbody.scrollTop}px;width:{fixedLeftWidth}px;height:{scrollHeight}px;z-index:2;")
+    .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
+      .fixedLeft(style="left:0px;top:{0-gridbody.scrollTop}px;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{gridbody.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
-          .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;bottom:{bottom}px;") {text}
-        .cell(each="{visCells.fixed}",style="top:{top}px;left:{left}px;width:{width}px;bottom:{bottom}px;") {text} 
-  
-
-
+          .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
+        .cell(each="{visCells.fixed}",style="top:{top}px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text} 
   
   style(type="text/stylus").
     
-    .gridwrap
-      position relative
+    grid2
       display block
-      border 1px solid #ccc
-      height:800px
-      font-family sans-serif
-      font-size:14px
     
-    .gridbody
-      position absolute
-      overflow:hidden
-      top 0
-      left 0
-      right 0
-      bottom 0
-    
-    .fixedLeft
-      position absolute
-      top 0
-      bottom 0
-      background:#eee
+      .gridwrap
+        position relative
+        display block
+        border 1px solid #ccc
+        font-family sans-serif
+        font-size:14px
       
-    .cell,.headercell
-      position absolute
-      padding 5px
+      .gridbody
+        position absolute
+        overflow:hidden
+        top 0
+        left 0
+        right 0
+        bottom 0
       
-    .header
-      position absolute
-      background #eee
-      z-index 1
+      .fixedLeft
+        position absolute
+        top 0
+        bottom 0
+        
+      .cell,.headercell
+        position absolute
+        padding 5px
+        whitespace no-wrap
+        overflow hidden
+        background white
+        border 1px solid #ccc
+        border-width 0 1px 1px 0 
+        
+      .header
+        position absolute
+        z-index 1
       
   script(type='text/coffee').
     @rowHeight = 30
     
     @on 'mount',->
-      @data = opts.data
-      @columns = opts.columns
       @gridbody = @root.querySelector(".gridbody")
-      @rows=[]
-      @calcPos()
-
+      
     @on 'update',->
-      return if !@gridbody
-      console.time('calc')
+      return if !@gridbody || !opts.data || !opts.columns
+      if opts.columns && opts.data && (@columns != opts.columns || @data != opts.data)
+        @data = opts.data
+        @columns = opts.columns
+        @rows=[]
+        console.log @data.length
+        @calcPos()
+      #console.time('calc')
       @visCells = calcVisible(@rows,@gridbody,@rowHeight)
-      console.timeEnd('calc')
+      #console.timeEnd('calc')
 
     @calcPos= =>
       # work out co-ordinates of all cells
@@ -75,7 +78,7 @@ grid2
       @fixedLeftWidth = @columns.filter((col)-> col.fixed?).reduce ((a,col)-> a+col.width),0
       @headers = {fixed:[],main:[]}
       left = 0
-      @columns.forEach (col,cidx)=>
+      for col,cidx in @columns
         key = if col.fixed then "fixed" else "main"
         @headers[key].push
           left:left
@@ -84,13 +87,13 @@ grid2
           width:col.width
           text:col.label
         left+=col.width
-      console.log 'headers',@headers
+
       
       for row,ridx in @data
         left = 0
         top = (ridx+1)*@rowHeight
         @rows[ridx]={data:[]}
-        @columns.forEach (col,cidx)=>
+        for col,cidx in @columns
           @rows[ridx].data.push
             top:if col.fixed then top else top-@rowHeight
             left: if col.fixed then left else left-@fixedLeftWidth
@@ -107,12 +110,8 @@ grid2
     @scrolling = (e)=>
       e.preventUpdate = true
       @update()
-      
-    @getClass = (e)=>
-      console.log e.item
-      
+            
     calcVisible=(rows,gridbody,rowHeight)->
-      #a quick way of determining which cells are visible
       r1 =
         top:gridbody.scrollTop
         left:gridbody.scrollLeft
@@ -132,6 +131,3 @@ grid2
           break if r2.left > r1.right
           
       return {main:visible,fixed:visiblefixed}
-
-    intersectRect = (r1, r2)->
-      return !(r2.left > r1.right || r2.right < r1.left)
