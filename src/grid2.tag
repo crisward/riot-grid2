@@ -1,18 +1,22 @@
 grid2
   .gridwrap(style="height:{opts.height}px")
+  
+    //- main body
     .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .scrollArea(style="width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
-        .cell(each="{visCells.main}",style="top:{top}px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
+        .cell(each="{visCells.main}",no-reorder,style="transform: translate3d({left}px,{top}px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
+    //- fixed top
     .gridbody(style="height:{rowHeight}px")
-      .header(style="top:0px;left:{0-gridbody.scrollLeft}px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
+      .header(style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
+        .headercell(each="{headers.main}",no-reorder,style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
+    //- fixed left
     .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
-      .fixedLeft(style="left:0px;top:{0-gridbody.scrollTop}px;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .header(style="top:{gridbody.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
+      .fixedLeft(style="left:0px;top:{0-gridbody[0].scrollTop}px;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+        .header(style="top:{gridbody[0].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        .cell(each="{visCells.fixed}",style="top:{top}px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text} 
+        .cell(each="{visCells.fixed}",no-reorder,style="transform:translate3d({left}px,{top}px,0px);backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text} 
   
   style(type="text/stylus").
     
@@ -51,12 +55,13 @@ grid2
       .header
         position absolute
         z-index 1
+        overflow hidden
       
   script(type='text/coffee').
     @rowHeight = 30
     
     @on 'mount',->
-      @gridbody = @root.querySelector(".gridbody")
+      @gridbody = @root.querySelectorAll(".gridbody")
       @update()
       
     @on 'update',->
@@ -68,7 +73,8 @@ grid2
         console.log @data.length
         @calcPos()
       #console.time('calc')
-      @visCells = calcVisible(@rows,@gridbody,@rowHeight)
+      @visCells = calcVisible(@rows,@gridbody[0],@rowHeight)
+      #@scrollLeft = @gridbody[0].scrollLeft
       #console.timeEnd('calc')
 
     @calcPos= =>
@@ -110,7 +116,9 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      @update()
+      @gridbody[1].scrollLeft = @gridbody[0].scrollLeft
+      requestAnimationFrame =>
+        @update()
             
     calcVisible=(rows,gridbody,rowHeight)->
       r1 =
