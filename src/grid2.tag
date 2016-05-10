@@ -7,7 +7,7 @@ grid2
         
     //- main body
     .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
-      .scrollArea(style="background:rgba(0,0,0,0.1);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
+      .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
        
     //- fixed top
     .gridbody(style="height:{rowHeight}px;padding-right:15px")
@@ -50,19 +50,16 @@ grid2
         position absolute
         top 0
         bottom 0
-        
-        
+
       .cell,.headercell
         position absolute
         box-sizing border-box
-        padding 5px
+        padding 10px 5px
         whitespace no-wrap
         overflow hidden
         background white
-        border 1px solid #ccc
+        border 1px solid #eee
         border-width 0 1px 1px 0
-        
-        
         
       .header
         position absolute
