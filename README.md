@@ -7,6 +7,10 @@ Trying to make it display millions of columns too.
 I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
 specific behaviours.
 
+## Demo
+
+Early demo is available here - http://crisward.github.io/riot-grid2/
+
 
 ## Min Dom changes
 
