@@ -85,6 +85,7 @@ grid2
         @columns = opts.columns
         @rows=[]
         @calcPos()
+        @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
       if !@visCells
         @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
       else
