@@ -72,11 +72,17 @@ grid2
         @data = opts.data
         @columns = opts.columns
         @rows=[]
+        console.time 'calcpos'
         @calcPos()
+        console.timeEnd 'calcpos'
       if !@visCells
+        console.time 'calcvis'
         @visCells = calcVisible(@rows,@gridbody[0],@rowHeight)
+        console.timeEnd 'calcvis'
       else
-        @visCells = reCalc(@visCells,@rows,@gridbody[0],@rowHeight)   
+        console.time 'recalc'
+        @visCells = reCalc(@visCells,@rows,@gridbody[0],@rowHeight)
+        console.timeEnd 'recalc' 
 
     @calcPos= =>
       # work out co-ordinates of all cells
@@ -120,8 +126,7 @@ grid2
     @scrolling = (e)=>
       e.preventUpdate = true
       @gridbody[1].scrollLeft = @gridbody[0].scrollLeft
-      requestAnimationFrame =>
-        @update()
+      @update()
         
     calcArea = (gridbody)->
       top:gridbody.scrollTop
@@ -167,5 +172,5 @@ grid2
       for show in newcells
         if viskeys.indexOf(show.key) == -1
           if unused.length > 0 then visible[unused.pop()] = show else visible.push(show)
-        
+
       return visible

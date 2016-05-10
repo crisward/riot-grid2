@@ -7,7 +7,7 @@
 
 <script type="riot/tag">
   <sample>
-    <grid2 data="{collection}" columns="{gridcols}" height="{1000}" tabindex="1" click="{handleSelect}" onchange="{handleSelect}" dblclick="{handleDoubleClick}"></grid2>
+    <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{1000}" tabindex="1" click="{handleSelect}" onchange="{handleSelect}" dblclick="{handleDoubleClick}"></grid2>
   </sample>
 </script>
 
@@ -64,7 +64,7 @@
     count++;
   }
   
-  this.gridcols = [
+  var gridcols = [
     {label:'#',field:'id',width:50,fixed:true},
     {label:'name',field:"name1",width:120,fixed:true},
     {label:'name2',field:"name2",width:120},
@@ -97,7 +97,7 @@
     {label:"name29",field:"name29",width:120}    
   ];
   
-  riot.mount('sample',{collection:collection})
+  riot.mount('sample',{collection:collection,gridcols:gridcols})
 
 </script>
 
