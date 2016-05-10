@@ -1,20 +1,23 @@
 grid2
   .gridwrap(style="height:{opts.height}px")
   
+    .gridbody(style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
+      .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+        .cell(each="{visCells.main}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
+        
     //- main body
     .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
-      .scrollArea(style="width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
-        .cell(each="{visCells.main}",no-reorder,style="left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
-    
+      .scrollArea(style="background:rgba(0,0,0,0.1);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
+       
     //- fixed top
-    .gridbody(style="height:{rowHeight}px")
+    .gridbody(style="height:{rowHeight}px;padding-right:15px")
       .header(style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
         .headercell(each="{headers.main}",no-reorder,style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed left
     .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
-      .fixedLeft(style="transform:translate3d(0px,{0-gridbody[0].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .header(style="top:{gridbody[0].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
+      .fixedLeft(style="transform:translate3d(0px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+        .header(style="top:{gridbody[1].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
         .cell(each="{visCells.fixed}",no-reorder,style="transform:translate3d({left}px,{top}px,0px);backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text} 
   
@@ -68,7 +71,7 @@ grid2
         transform: translateZ(0)
       
   script(type='text/coffee').
-    @rowHeight = 30
+    @rowHeight = 40
     
     @on 'mount',->
       @visCells = null
@@ -81,17 +84,11 @@ grid2
         @data = opts.data
         @columns = opts.columns
         @rows=[]
-        console.time 'calcpos'
         @calcPos()
-        console.timeEnd 'calcpos'
       if !@visCells
-        console.time 'calcvis'
-        @visCells = calcVisible(@rows,@gridbody[0],@rowHeight)
-        console.timeEnd 'calcvis'
+        @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
       else
-        console.time 'recalc'
-        @visCells = reCalc(@visCells,@rows,@gridbody[0],@rowHeight)
-        console.timeEnd 'recalc' 
+        @visCells = reCalc(@visCells,@rows,@gridbody[1],@rowHeight)
 
     @calcPos= =>
       # work out co-ordinates of all cells
@@ -134,7 +131,8 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      @gridbody[1].scrollLeft = @gridbody[0].scrollLeft
+      #requestAnimationFrame =>
+      @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
       @update()
         
     calcArea = (gridbody)->
