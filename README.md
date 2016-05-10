@@ -8,9 +8,19 @@ I'm aiming to take a different approach. By absolutely positioning all the cells
 specific behaviours.
 
 
+## Min Dom changes
 
+#### On first render
 
+* Go through all cells and add those which are in the visible area
 
+#### on scroll
+
+* Go through current cells and work out which ones should be removed
+* Store the keys of these cells in an 'unused' array
+* Go though all cells and find those which are current not visible but should be
+* Add new cells into the unused slots
+* If there are more new cells than unusued, add more (for grid resizes) 
 
 ## License
 

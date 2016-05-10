@@ -45,6 +45,7 @@ grid2
         
       .cell,.headercell
         position absolute
+        box-sizing border-box
         padding 5px
         whitespace no-wrap
         overflow hidden
@@ -61,6 +62,7 @@ grid2
     @rowHeight = 30
     
     @on 'mount',->
+      @visCells = null
       @gridbody = @root.querySelectorAll(".gridbody")
       @update()
       
@@ -70,12 +72,11 @@ grid2
         @data = opts.data
         @columns = opts.columns
         @rows=[]
-        console.log @data.length
         @calcPos()
-      #console.time('calc')
-      @visCells = calcVisible(@rows,@gridbody[0],@rowHeight)
-      #@scrollLeft = @gridbody[0].scrollLeft
-      #console.timeEnd('calc')
+      if !@visCells
+        @visCells = calcVisible(@rows,@gridbody[0],@rowHeight)
+      else
+        @visCells = reCalc(@visCells,@rows,@gridbody[0],@rowHeight)   
 
     @calcPos= =>
       # work out co-ordinates of all cells
@@ -95,7 +96,7 @@ grid2
           text:col.label
         left+=col.width
 
-      
+      key = 0 #every cell has unique key
       for row,ridx in @data
         left = 0
         top = (ridx+1)*@rowHeight
@@ -109,6 +110,8 @@ grid2
             width:col.width
             text:row[col.field]
             fixed:if col.fixed then true else false
+            key:key
+          key++
           left+=col.width
       @scrollWidth = left
       @scrollHeight = top+@rowHeight
@@ -119,13 +122,15 @@ grid2
       @gridbody[1].scrollLeft = @gridbody[0].scrollLeft
       requestAnimationFrame =>
         @update()
+        
+    calcArea = (gridbody)->
+      top:gridbody.scrollTop
+      left:gridbody.scrollLeft
+      right:gridbody.scrollLeft+gridbody.offsetWidth
+      bottom:gridbody.scrollTop+gridbody.offsetHeight
             
     calcVisible=(rows,gridbody,rowHeight)->
-      r1 =
-        top:gridbody.scrollTop
-        left:gridbody.scrollLeft
-        right:gridbody.scrollLeft+gridbody.offsetWidth
-        bottom:gridbody.scrollTop+gridbody.offsetHeight
+      r1 = calcArea(gridbody)
       first = Math.max(Math.floor(r1.top / rowHeight),0)
       last = Math.ceil(r1.bottom / rowHeight)
       visrows = rows.slice(first,last)
@@ -140,3 +145,27 @@ grid2
           break if r2.left > r1.right
           
       return {main:visible,fixed:visiblefixed}
+    
+    reCalc=(visCells,rows,gridbody,rowHeight)->
+      newcells = calcVisible(rows,gridbody,rowHeight)
+      area = calcArea(gridbody)
+      # record unused
+      visCells.main = reUse(visCells.main,newcells.main,area)
+      visCells.fixed = reUse(visCells.fixed,newcells.fixed,area)
+      return visCells
+      
+     
+    reUse = (visible,newcells,area)->
+      unused = []
+      viskeys = []
+      for cell,idx in visible
+        if cell.left > area.right || cell.right < area.left || cell.bottom < area.top || cell.top > area.bottom
+          unused.push idx
+        else
+          viskeys.push cell.key 
+
+      for show in newcells
+        if viskeys.indexOf(show.key) == -1
+          if unused.length > 0 then visible[unused.pop()] = show else visible.push(show)
+        
+      return visible
