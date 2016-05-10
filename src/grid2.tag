@@ -4,7 +4,7 @@ grid2
     //- main body
     .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .scrollArea(style="width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
-        .cell(each="{visCells.main}",no-reorder,style="transform: translate3d({left}px,{top}px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
+        .cell(each="{visCells.main}",no-reorder,style="left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed top
     .gridbody(style="height:{rowHeight}px")
@@ -13,7 +13,7 @@ grid2
     
     //- fixed left
     .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
-      .fixedLeft(style="left:0px;top:{0-gridbody[0].scrollTop}px;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+      .fixedLeft(style="transform:translate3d(0px,{0-gridbody[0].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{gridbody[0].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
         .cell(each="{visCells.fixed}",no-reorder,style="transform:translate3d({left}px,{top}px,0px);backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text} 
@@ -22,7 +22,10 @@ grid2
     
     grid2
       display block
-    
+      -webkit-font-smoothing: antialiased
+      text-rendering: optimizeSpeed
+      .scrollArea
+        transform: translateZ(0)
       .gridwrap
         position relative
         display block
@@ -37,11 +40,14 @@ grid2
         left 0
         right 0
         bottom 0
+        transform: translateZ(0)
+        backface-visibility hidden
       
       .fixedLeft
         position absolute
         top 0
         bottom 0
+        
         
       .cell,.headercell
         position absolute
@@ -51,12 +57,15 @@ grid2
         overflow hidden
         background white
         border 1px solid #ccc
-        border-width 0 1px 1px 0 
+        border-width 0 1px 1px 0
+        
+        
         
       .header
         position absolute
         z-index 1
         overflow hidden
+        transform: translateZ(0)
       
   script(type='text/coffee').
     @rowHeight = 30
