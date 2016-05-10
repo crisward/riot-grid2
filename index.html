@@ -7,7 +7,7 @@
   <body>
     <div class="container">
       <h1>Riot Grid 2</h1>
-      <p>This is just a very quick demo of work in progress</p>
+      <p>This is just a very quick demo of work in progress, show 100,000 rows with 30 columns (3 million cells)</p>
       <sample></sample>
     </div>
 
@@ -15,7 +15,7 @@
     <script src="https://rawgit.com/crisward/riot-grid2/master/lib/grid2.js"></script>
     <script type="riot/tag">
       <sample>
-        <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{700}" tabindex="1"></grid2>
+        <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{500}" tabindex="1"></grid2>
       </sample>
     </script>
     <script>
@@ -30,7 +30,7 @@
       };
       var collection=[]
       var count=0
-      while(count<1000){
+      while(count<100000){
         collection.push({
           id:count,
           name1:randFirstname(),
