@@ -6,7 +6,7 @@ grid2
         .cell(each="{visCells.main}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
         
     //- main body
-    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
+    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;pointer-events: none;")
       .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
        
     //- fixed top
@@ -29,7 +29,6 @@ grid2
       text-rendering: optimizeSpeed
       .scrollArea
         transform: translateZ(0)
-        pointer-events: none;
       .gridwrap
         position relative
         display block
