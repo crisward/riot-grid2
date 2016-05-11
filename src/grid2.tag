@@ -29,6 +29,7 @@ grid2
       text-rendering: optimizeSpeed
       .scrollArea
         transform: translateZ(0)
+        pointer-events: none;
       .gridwrap
         position relative
         display block
