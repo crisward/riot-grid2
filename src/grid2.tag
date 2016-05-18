@@ -75,6 +75,7 @@ grid2
     @on 'mount',->
       @visCells = null
       @activeCells = []
+      @activeRows = []
       @scrollWait = null
       @rowHeight = 40
       @scrollAreaEvents = "none"
@@ -98,10 +99,19 @@ grid2
         @visCells = reCalc(@visCells,@rows,@gridbody[1],@rowHeight)
 
     @handleClick = (e)=>
-      @deselect()
-      @selectRow(e.item.ridx)
-      
+      @deselect() if !e.metaKey
+      if e.metaKey then @toggleRow(e.item.ridx) else @selectRow(e.item.ridx)
+    
+    @toggleRow = (ridx)=>
+      if @activeRows.indexOf(ridx)>-1 then  @deselectRow(ridx) else @selectRow(ridx)
+       
+    @deselectRow = (ridx)=>
+      @activeRows.splice(@activeRows.indexOf(ridx),1)
+      @activeCells.forEach (cell)-> if cell.ridx == ridx then cell.active = false 
+    
     @selectRow = (ridx)=>
+      @activeRows.push ridx
+      console.log 'select',ridx,@activeRows
       for cell in @rows[ridx].data
         @activeCells.push cell
         cell.active = true
@@ -109,6 +119,7 @@ grid2
     @deselect = =>
       @activeCells.forEach (cell)-> cell.active = false
       @activeCells.length = 0
+      @activeRows.length = 0
     
     @disableInteraction = (e)=>
       e.preventDefault()
@@ -163,7 +174,7 @@ grid2
         console.log 'none'
         @scrollAreaEvents = "none"
         @update()
-      ,200
+      ,100
       @update()
         
     calcArea = (gridbody)->
