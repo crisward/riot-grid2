@@ -3,7 +3,7 @@ grid2
   
     .gridbody(onscroll="{disableInteraction}",style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .cell(each="{visCells.main}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
+        .cell(each="{visCells.main}",class="{active:active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
         
     //- main body
     .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;pointer-events:{scrollAreaEvents}")
@@ -19,10 +19,9 @@ grid2
       .fixedLeft(style="transform:translate3d(0px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{gridbody[1].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        .cell(each="{visCells.fixed}",no-reorder,style="transform:translate3d({left}px,{top}px,0px);backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text} 
+        .cell(each="{visCells.fixed}",class="{active:active}",onclick="{handleClick}",no-reorder,style="transform:translate3d({left}px,{top}px,0px);backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text} 
   
-  style(type="text/stylus").
-    
+  style(type="text/stylus"). 
     grid2
       display block
       -webkit-font-smoothing: antialiased
@@ -60,6 +59,10 @@ grid2
         background white
         border 1px solid #eee
         border-width 0 1px 1px 0
+        cursor pointer
+        
+      .cell.active
+        background #eee
         
       .header
         position absolute
@@ -71,6 +74,7 @@ grid2
     
     @on 'mount',->
       @visCells = null
+      @activeCells = []
       @scrollWait = null
       @rowHeight = 40
       @scrollAreaEvents = "none"
@@ -94,7 +98,17 @@ grid2
         @visCells = reCalc(@visCells,@rows,@gridbody[1],@rowHeight)
 
     @handleClick = (e)=>
-      console.log 'click2',e
+      @deselect()
+      @selectRow(e.item.ridx)
+      
+    @selectRow = (ridx)=>
+      for cell in @rows[ridx].data
+        @activeCells.push cell
+        cell.active = true
+    
+    @deselect = =>
+      @activeCells.forEach (cell)-> cell.active = false
+      @activeCells.length = 0
     
     @disableInteraction = (e)=>
       e.preventDefault()
@@ -132,6 +146,7 @@ grid2
             width:col.width
             text:row[col.field]
             fixed:if col.fixed then true else false
+            ridx:ridx
             key:key
           key++
           left+=col.width
