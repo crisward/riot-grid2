@@ -114,7 +114,6 @@ grid2
     
     @selectRow = (ridx)=>
       @activeRows.push ridx
-      console.log 'select',ridx,@activeRows
       for cell in @rows[ridx].data
         @activeCells.push cell
         cell.active = true
@@ -175,10 +174,9 @@ grid2
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
       clearTimeout(@scrollWait)
       @scrollWait = setTimeout =>
-        console.log 'none'
         @scrollAreaEvents = "none"
         @update()
-      ,100
+      ,200
       @update()
         
     calcArea = (gridbody)->
