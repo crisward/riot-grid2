@@ -127,6 +127,7 @@ grid2
       e.target.scrollTop = 10
       e.target.scrollLeft = 10
       @scrollAreaEvents = "auto"
+      @cancelScroll()
       
     @calcPos= =>
       # work out co-ordinates of all cells
@@ -170,14 +171,16 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      #requestAnimationFrame =>
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
+      @cancelScroll()
+      @update()
+    
+    @cancelScroll = =>
       clearTimeout(@scrollWait)
       @scrollWait = setTimeout =>
         @scrollAreaEvents = "none"
         @update()
       ,200
-      @update()
         
     calcArea = (gridbody)->
       top:gridbody.scrollTop
