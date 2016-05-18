@@ -1,12 +1,12 @@
 grid2
   .gridwrap(style="height:{opts.height}px")
   
-    .gridbody(style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
+    .gridbody(onscroll="{disableInteraction}",style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .cell(each="{visCells.main}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
+        .cell(each="{visCells.main}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
         
     //- main body
-    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;")
+    .gridbody(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;pointer-events:{scrollAreaEvents}")
       .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
        
     //- fixed top
@@ -68,12 +68,17 @@ grid2
         transform: translateZ(0)
       
   script(type='text/coffee').
-    @rowHeight = 40
     
     @on 'mount',->
       @visCells = null
+      @scrollWait = null
+      @rowHeight = 40
+      @scrollAreaEvents = "none"
       @gridbody = @root.querySelectorAll(".gridbody")
       @update()
+      
+    @on 'unmount',->
+      clearTimeout(@scrollWait) if @scrollWait
       
     @on 'update',->
       return if !@gridbody || !opts.data || !opts.columns
@@ -88,6 +93,13 @@ grid2
       else
         @visCells = reCalc(@visCells,@rows,@gridbody[1],@rowHeight)
 
+    @handleClick = (e)=>
+      console.log 'click2',e
+    
+    @disableInteraction = (e)=>
+      e.preventDefault()
+      @scrollAreaEvents = "auto"
+      
     @calcPos= =>
       # work out co-ordinates of all cells
       left = 0
@@ -131,6 +143,12 @@ grid2
       e.preventUpdate = true
       #requestAnimationFrame =>
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
+      clearTimeout(@scrollWait)
+      @scrollWait = setTimeout =>
+        console.log 'none'
+        @scrollAreaEvents = "none"
+        @update()
+      ,200
       @update()
         
     calcArea = (gridbody)->
