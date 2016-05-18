@@ -26,6 +26,11 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 * Add new cells into the unused slots
 * If there are more new cells than unusued, add more (for grid resizes) 
 
+## Known issues
+
+* Mobile scrolling doesn't work well with the 'scroll overlay' technique
+* columns mis-align when scroll all the way to the right (with visible scrollbars)
+
 ## License
 
 (The MIT License)
