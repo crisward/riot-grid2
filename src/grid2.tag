@@ -11,7 +11,7 @@ grid2
       .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px")
        
     //- fixed top
-    .gridbody(style="height:{rowHeight}px;padding-right:15px")
+    .gridbody(style="height:{rowHeight}px;margin-right:15px")
       .header(style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
         .headercell(each="{headers.main}",no-reorder,style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     

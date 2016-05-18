@@ -29,7 +29,7 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 ## Known issues
 
 * Mobile scrolling doesn't work well with the 'scroll overlay' technique
-* columns mis-align when scroll all the way to the right (with visible scrollbars)
+* ~~columns mis-align when scroll all the way to the right (with visible scrollbars)~~
 
 ## License
 
