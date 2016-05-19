@@ -32,6 +32,22 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 * ~~columns mis-align when scroll all the way to the right (with visible scrollbars)~~
 * scrollbars switch off when not using the mouse wheel / trackpad
 
+## Features to add
+
+### Keyboard
+* down, select next, scroll to active
+* up, select previous, scroll to active
+* cmd+down, select next, in addition to last selected
+* cmd+up, select previous, in addition to last selected
+* shift click, select all between last select and clicked row
+
+### General
+* make header 'edges' draggable to resize columns (perhaps make optional)
+
+### Callbacks
+* on-click - callback with array of selected rows and last clicked row
+* on-dblclick - callback with array of selected rows and last double clicked row 
+
 ## License
 
 (The MIT License)
