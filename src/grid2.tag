@@ -175,7 +175,6 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      console.log @gridbody[1].scrollLeft
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
       @update()
             
