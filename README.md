@@ -26,6 +26,9 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 * Add new cells into the unused slots
 * If there are more new cells than unusued, add more (for grid resizes) 
 
+### Callbacks
+* click - callback with array of selected rows
+
 ## Known issues
 
 * ~~Mobile scrolling doesn't work well with the 'scroll overlay' technique~~
@@ -45,7 +48,6 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 * make header 'edges' draggable to resize columns (perhaps make optional)
 
 ### Callbacks
-* on-click - callback with array of selected rows and last clicked row
 * on-dblclick - callback with array of selected rows and last double clicked row 
 
 ## License

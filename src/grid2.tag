@@ -95,7 +95,7 @@ grid2
         @data = opts.data
         @columns = opts.columns
         @rows=[]
-        @calcPos()
+        calcPos()
         @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
       if !@visCells
         @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
@@ -115,6 +115,7 @@ grid2
     
     @selectRow = (ridx)=>
       @activeRows.push ridx
+      if opts.click then opts.click @activeRows.map (idx)-> opts.data[idx]
       for cell in @rows[ridx].data
         @activeCells.push cell
         cell.active = true
@@ -133,8 +134,7 @@ grid2
       @overlay.style.display = "block"
       @update()
      
-    @calcPos= =>
-      # work out co-ordinates of all cells
+    calcPos= => # work out co-ordinates of all cells
       left = 0
       top = 0
       @rows = []

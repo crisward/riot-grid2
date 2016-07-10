@@ -18,6 +18,7 @@ testtag
       @height = opts.gridheight
 
     @handleSelect = (row)=>
+      console.log row
       opts.testclick(row)
 
     @handleEdit = (row)=>

@@ -7,7 +7,11 @@
 
 <script type="riot/tag">
   <sample>
-    <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{700}" tabindex="1" click="{handleSelect}" onchange="{handleSelect}" dblclick="{handleDoubleClick}"></grid2>
+    <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{700}" tabindex="1" click="{handleClick}" onchange="{handleSelect}" dblclick="{handleDoubleClick}"></grid2>
+    
+    this.handleClick = function (rows){
+      console.log('clicked',rows)
+    }
   </sample>
 </script>
 
@@ -96,7 +100,7 @@
     {label:"name28",field:"name28",width:120},
     {label:"name29",field:"name29",width:120}    
   ];
-  
+
   riot.mount('sample',{collection:collection,gridcols:gridcols})
 
 </script>
