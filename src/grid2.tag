@@ -7,7 +7,7 @@ grid2
         .cell(each="{visCells.main}",class="{active:active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
         
     //- scroll area
-    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;pointer-events:{scrollAreaEvents};box-shadow:inset -10px -10px 0 0 rgba(255,255,255,1)")
+    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;box-shadow:inset -10px -10px 0 0 rgba(255,255,255,1)")
       .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px;")
        
     //- fixed top
@@ -79,7 +79,6 @@ grid2
       @activeRows = []
       @scrollWait = null
       @rowHeight = 40
-      @scrollAreaEvents = "auto"
       @gridbody = @root.querySelectorAll(".gridbody")
       @update()
       @gridbody[0].scrollTop = 10
@@ -135,13 +134,7 @@ grid2
       elem.dispatchEvent(event)
       @overlay.style.display = "block"
       @update()
-
-    @disableInteraction = (e)=>
-      e.target.scrollTop = 10
-      e.target.scrollLeft = 10
-      @scrollAreaEvents = "auto"
-      @cancelScroll()
-      
+     
     @calcPos= =>
       # work out co-ordinates of all cells
       left = 0
@@ -185,16 +178,8 @@ grid2
     @scrolling = (e)=>
       e.preventUpdate = true
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
-      @cancelScroll()
       @update()
-    
-    @cancelScroll = =>
-      clearTimeout(@scrollWait)
-      @scrollWait = setTimeout =>
-        #@scrollAreaEvents = "none"
-        @update()
-      ,200
-        
+            
     calcArea = (gridbody)->
       top:gridbody.scrollTop
       left:gridbody.scrollLeft
