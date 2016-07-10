@@ -28,9 +28,9 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 
 ## Known issues
 
-* Mobile scrolling doesn't work well with the 'scroll overlay' technique
+* ~~Mobile scrolling doesn't work well with the 'scroll overlay' technique~~
 * ~~columns mis-align when scroll all the way to the right (with visible scrollbars)~~
-* scrollbars switch off when not using the mouse wheel / trackpad
+* ~~scrollbars switch off when not using the mouse wheel / trackpad~~
 
 ## Features to add
 
