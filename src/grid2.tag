@@ -81,8 +81,6 @@ grid2
       @rowHeight = 40
       @gridbody = @root.querySelectorAll(".gridbody")
       @update()
-      @gridbody[0].scrollTop = 10
-      @gridbody[0].scrollLeft = 10
       @overlay.addEventListener('click',@pushThroughClick)
       @overlay.addEventListener('dlbclick',@pushThroughClick)
       
@@ -160,8 +158,8 @@ grid2
         @rows[ridx]={data:[]}
         for col,cidx in @columns
           @rows[ridx].data.push
-            top:if col.fixed then top else top-@rowHeight+10
-            left: if col.fixed then left else left-@fixedLeftWidth+10
+            top:if col.fixed then top else top-@rowHeight
+            left: if col.fixed then left else left-@fixedLeftWidth
             right:if col.fixed then col.width+left else col.width+left-@fixedLeftWidth
             bottom:top+@rowHeight
             width:col.width
@@ -177,6 +175,7 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
+      console.log @gridbody[1].scrollLeft
       @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
       @update()
             
