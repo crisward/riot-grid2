@@ -2,12 +2,12 @@ grid2
   .gridwrap(style="height:{opts.height}px")
   
     //- main body
-    .gridbody(style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
+    .gridbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .cell(each="{visCells.main}",class="{active:active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
         
     //- scroll area
-    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;box-shadow:inset -10px -10px 0 0 rgba(255,255,255,1)")
+    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;")
       .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px;")
        
     //- fixed top
