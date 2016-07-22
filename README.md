@@ -9,6 +9,11 @@
 
 Early demo is available here - http://crisward.github.io/riot-grid2/
 
+## Installing
+
+```bash
+npm install riot-grid2 --save-dev
+```
 
 ## Usage
 
