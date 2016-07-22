@@ -4,7 +4,7 @@ grid2
     //- main body
     .gridbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .cell(each="{visCells.main}",class="{active:active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text}
+        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
         
     //- scroll area
     .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;")
@@ -20,7 +20,7 @@ grid2
       .fixedLeft(style="transform:translate3d(0px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{gridbody[1].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        .cell(each="{visCells.fixed}",class="{active:active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{left}px;top:{top}px;width:{width}px;height:{rowHeight}px;") {text} 
+        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
   
   style(type="text/stylus"). 
     grid2
@@ -78,7 +78,7 @@ grid2
       @activeCells = []
       @activeRows = []
       @scrollWait = null
-      @rowHeight = 40
+      @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
       @update()
       @overlay.addEventListener('click',@pushThroughClick)
@@ -104,7 +104,7 @@ grid2
 
     @handleClick = (e)=>
       @deselect() if !e.metaKey
-      if e.metaKey then @toggleRow(e.item.ridx) else @selectRow(e.item.ridx)
+      if e.metaKey then @toggleRow(e.item.cell.ridx) else @selectRow(e.item.cell.ridx)
     
     @toggleRow = (ridx)=>
       if @activeRows.indexOf(ridx)>-1 then  @deselectRow(ridx) else @selectRow(ridx)
@@ -114,6 +114,7 @@ grid2
       @activeCells.forEach (cell)-> if cell.ridx == ridx then cell.active = false 
     
     @selectRow = (ridx)=>
+      console.log ridx
       @activeRows.push ridx
       if opts.click then opts.click @activeRows.map (idx)-> opts.data[idx]
       for cell in @rows[ridx].data
@@ -149,6 +150,7 @@ grid2
           bottom:top+@rowHeight
           width:col.width
           text:col.label
+          tag:col.tag
         left+=col.width
 
       key = 0 #every cell has unique key
@@ -164,6 +166,7 @@ grid2
             bottom:top+@rowHeight
             width:col.width
             text:row[col.field]
+            tag:col.tag
             fixed:if col.fixed then true else false
             ridx:ridx
             key:key
@@ -209,18 +212,46 @@ grid2
       visCells.fixed = reUse(visCells.fixed,newcells.fixed,area)
       return visCells
       
-     
     reUse = (visible,newcells,area)->
-      unused = []
+      unused = {}
       viskeys = []
       for cell,idx in visible
+        tag = cell.tag || "notag"
+        # if cell is outside of viewable area, push it onto an unused tag array
         if cell.left > area.right || cell.right < area.left || cell.bottom < area.top || cell.top > area.bottom
-          unused.push idx
+          unused[tag] = [] if !unused[tag]
+          unused[tag].push idx
         else
+        # if cell is in visible areaa keep on viskeys
           viskeys.push cell.key 
-
       for show in newcells
-        if viskeys.indexOf(show.key) == -1
-          if unused.length > 0 then visible[unused.pop()] = show else visible.push(show)
-
+        if viskeys.indexOf(show.key) == -1 #if new cell us not on viskeys, try and reuse a tag
+          tag = show.tag || "notag"
+          if unused[tag]?.length > 0 then visible[unused[tag].pop()] = show else visible.push(show)
       return visible
+
+
+gridcelltag 
+  div(riot-tag="{opts.tag}")
+    <yield />
+    
+  script(type="text/coffee").
+    # copy of riot-subtag
+    @prevtag = null
+
+    @on 'mount',->
+      return if !opts.tag
+      @prevtag = opts.tag
+      @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
+
+    @on 'update',->
+      if @prevtag && @prevtag != opts.tag
+        @prevtag = opts.tag
+        @mountedTag.unmount(true)
+        @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
+      else if @mountedTag
+        @mountedTag.opts = opts
+        @mountedTag.update()
+
+    @on 'unmount',->
+      @mountedTag.unmount(true) if @mountedTag

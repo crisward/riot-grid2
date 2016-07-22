@@ -7,6 +7,9 @@ Trying to make it display millions of columns too.
 I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
 specific behaviours.
 
+I've now added riot-subtag functionality to this so each column can have a custom tag specified.
+
+
 ## Demo
 
 Early demo is available here - http://crisward.github.io/riot-grid2/
@@ -21,13 +24,14 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 #### on scroll
 
 * Go through current cells and work out which ones should be removed
-* Store the keys of these cells in an 'unused' array
+* Store the keys of these cells in an 'unused' array (one for each tag type)
 * Go though all cells and find those which are current not visible but should be
 * Add new cells into the unused slots
 * If there are more new cells than unusued, add more (for grid resizes) 
 
 ### Callbacks
 * click - callback with array of selected rows
+
 
 ## Known issues
 
