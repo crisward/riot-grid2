@@ -115,7 +115,6 @@ grid2
       @activeCells.forEach (cell)-> if cell.ridx == ridx then cell.active = false 
     
     @selectRow = (ridx)=>
-      console.log ridx
       @activeRows.push ridx
       if opts.click then opts.click @activeRows.map (idx)-> opts.data[idx]
       for cell in @rows[ridx].data

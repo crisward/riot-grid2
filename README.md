@@ -29,13 +29,13 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 The `columns` attrubute is an object which describes the data.
 The following keys can be used.
 
-|name       |Type   | Required |Description
-|------     |-----  |------    |------
-|label		  |string |yes       |The label which appears in the table header
-|field	 	  |string |yes       |The name of the field within your data object to display in this column
-|width		  |int		|yes       |Width in pixels of this column
-|fixed		  |bool	|no        |If this column should be fixed, or allowed to scroll horizontally 
-|tag		  |string |no			 |name of tag you would like to use in the column (see below)
+|name       |Type    | Required |Description
+|------     |-----   |------    |------
+|label	    |string  |yes       |The label which appears in the table header
+|field	    |string  |yes       |The name of the field within your data object to display in this column
+|width	    |int	 |yes       |Width in pixels of this column
+|fixed	    |bool	 |no        |If this column should be fixed, or allowed to scroll horizontally 
+|tag   	    |string  |no		|name of tag you would like to use in the column (see below)
 
 Example
 
@@ -54,8 +54,8 @@ Tags that are passed to the column reference will be passed the following attrib
 
 |name       | Type  |Description
 |------     |------ |------
-|cell		  |object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `acxtive` `tag` `text` `ridx` ridx is the row index.
-|value		  |string |The value of the field passed in
+|cell		|object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `active` `tag` `text` `ridx` ridx is the row index.
+|value		|string |The value of the field passed in
 
 
 Example
