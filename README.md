@@ -2,20 +2,79 @@
 
 (potential successor to [riot-grid](https://github.com/crisward/riot-grid))
 
-Trying to make it display millions of columns too.
-
-I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
-specific behaviours.
-
-I've now added riot-subtag functionality to this so each column can have a custom tag specified.
-
-
 ## Demo
 
 Early demo is available here - http://crisward.github.io/riot-grid2/
 
 
-## Min Dom changes
+## Usage
+
+```html
+<riot-grid2 data="{data}" columns="{columns}" height="{700}" tabindex="1" click="{handleClick}"></riot-grid2>
+```
+
+#### Attributes
+
+|name       |Description
+|------     |------
+|data       |collection of data (array of objects)
+|columns    |column description object (see below)
+|height     |visible height of the grid, in pixels. 
+|tabindex   |need to make the grid active for keyboard use
+|click      |callback when a row is clicked. Returns an array of selected rows. Last element in the array is the last selected.
+
+
+#### Columns
+
+The `columns` attrubute is an object which describes the data.
+The following keys can be used.
+
+|name       |Type   | Required |Description
+|------     |-----  |------    |------
+|label		  |string |yes       |The label which appears in the table header
+|field	 	  |string |yes       |The name of the field within your data object to display in this column
+|width		  |int		|yes       |Width in pixels of this column
+|fixed		  |bool	|no        |If this column should be fixed, or allowed to scroll horizontally 
+|tag		  |string |no			 |name of tag you would like to use in the column
+
+Example
+
+```javascript
+var columns = [
+    {label:'#',field:'id',width:50,fixed:true},
+    {label:'name',field:"name1",width:120,fixed:true},
+    {label:'name2',field:"name2",width:120},
+    {label:"popularity",field:"popularity",width:200,tag:"image-cell"}
+]
+```
+
+### Custom tags
+
+Tags that are passed to the column reference will be passed the following attributes
+
+|name       | Type  |Description
+|------     |------ |------
+|cell		  |object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `active` `tag` `text`
+|value		  |string |The value of the field passed in
+
+
+Example
+
+```html
+<image-cell>
+	<img src="{opts.value}" style="width:{opts.cell.width}px" />
+</image-cell>
+```
+
+
+## About
+
+Trying to make it display millions of columns too.
+
+I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
+specific behaviours.
+
+### Min Dom changes
 
 #### On first render
 
@@ -24,20 +83,11 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 #### on scroll
 
 * Go through current cells and work out which ones should be removed
-* Store the keys of these cells in an 'unused' array (one for each tag type)
+* Store the keys of these cells in an 'unused' array
 * Go though all cells and find those which are current not visible but should be
 * Add new cells into the unused slots
 * If there are more new cells than unusued, add more (for grid resizes) 
 
-### Callbacks
-* click - callback with array of selected rows
-
-
-## Known issues
-
-* ~~Mobile scrolling doesn't work well with the 'scroll overlay' technique~~
-* ~~columns mis-align when scroll all the way to the right (with visible scrollbars)~~
-* ~~scrollbars switch off when not using the mouse wheel / trackpad~~
 
 ## Features to add
 

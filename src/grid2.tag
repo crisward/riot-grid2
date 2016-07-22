@@ -4,7 +4,7 @@ grid2
     //- main body
     .gridbody#mainbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-overlay.scrollLeft}px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
         
     //- fixed top
     .gridbody#header(style="height:{rowHeight}px;margin-right:15px")
@@ -16,7 +16,7 @@ grid2
       .fixedLeft(style="transform:translate3d(0px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{overlay.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
   
     //- scroll area
     .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;")
