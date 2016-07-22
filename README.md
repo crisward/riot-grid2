@@ -1,7 +1,7 @@
 # Riot Grid2
 
 [![Build Status](https://travis-ci.org/crisward/riot-grid2.svg?branch=master)](https://travis-ci.org/crisward/riot-grid2)
-![Coverage Status](https://coveralls.io/repos/github/crisward/riot-grid2/badge.svg?branch=master)](https://coveralls.io/github/crisward/riot-grid2?branch=master)
+![Coverage Status](https://coveralls.io/repos/github/crisward/riot-grid2/badge.svg?branch=master)
 
 (potential successor to [riot-grid](https://github.com/crisward/riot-grid))
 
