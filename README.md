@@ -10,7 +10,7 @@ Early demo is available here - http://crisward.github.io/riot-grid2/
 ## Usage
 
 ```html
-<riot-grid2 data="{data}" columns="{columns}" height="{700}" tabindex="1" click="{handleClick}"></riot-grid2>
+<grid2 data="{data}" columns="{columns}" height="{700}" tabindex="1" click="{handleClick}"></grid2>
 ```
 
 #### Attributes
