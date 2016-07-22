@@ -3,7 +3,8 @@
 [![Build Status](https://travis-ci.org/crisward/riot-grid2.svg?branch=master)](https://travis-ci.org/crisward/riot-grid2)
 [![Coverage Status](https://coveralls.io/repos/github/crisward/riot-grid2/badge.svg?branch=master&v=2)](https://coveralls.io/github/crisward/riot-grid2?branch=master)
 
-(potential successor to [riot-grid](https://github.com/crisward/riot-grid))
+[riot-grid](https://github.com/crisward/riot-grid) Version 2.
+With new api and optimised for high column numbers.
 
 ## Demo
 
