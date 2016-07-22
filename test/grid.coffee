@@ -16,7 +16,7 @@ rows = null
 # id:i,first_name:randFirstname(),surname:randSurname(),age:randAge()
 
 columns = [
-  {field:"id",label:"#",width:20}
+  {field:"id",label:"#",width:20,fixed:true}
   {field:"first_name",label:"First Name",width:100}
   {field:"surname",label:"Surname",width:100}
   {field:"age",label:"Age",width:100}
@@ -76,6 +76,16 @@ describe 'grid2',->
     expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
     simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
     expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+  
+  it "should show custom tag",->
+    expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
+    columns[1].tag = "testcell"
+    @tag.unmount(true)
+    @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
+    riot.update() 
+    expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
+
+    
 
 # it "should call ondblclick callback when row is double clicked",->
 #   simulant.fire(document.querySelectorAll('.gridrow')[2],'dblclick')
