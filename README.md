@@ -35,7 +35,7 @@ The following keys can be used.
 |field	 	  |string |yes       |The name of the field within your data object to display in this column
 |width		  |int		|yes       |Width in pixels of this column
 |fixed		  |bool	|no        |If this column should be fixed, or allowed to scroll horizontally 
-|tag		  |string |no			 |name of tag you would like to use in the column
+|tag		  |string |no			 |name of tag you would like to use in the column (see below)
 
 Example
 
@@ -54,7 +54,7 @@ Tags that are passed to the column reference will be passed the following attrib
 
 |name       | Type  |Description
 |------     |------ |------
-|cell		  |object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `active` `tag` `text`
+|cell		  |object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `acxtive` `tag` `text` `ridx` ridx is the row index.
 |value		  |string |The value of the field passed in
 
 
@@ -69,18 +69,19 @@ Example
 
 ## About
 
-Trying to make it display millions of columns too.
+Riot-grid helped to create grids with millions of rows, but slowed down dramatically with lots of colums.
+Riot-grid2 is an attempt to resolve this limitation. 
 
-I'm aiming to take a different approach. By absolutely positioning all the cells so they can be given 
-specific behaviours.
+It works by rendering individual cells, removing them from the dom or re-using them when they are no longer visible. Each cell is absolutelly positioned. Read on for a more details on how it acheives this.
 
-### Min Dom changes
 
-#### On first render
+#### Min Dom changes
+
+**On first render**
 
 * Go through all cells and add those which are in the visible area
 
-#### on scroll
+**On scroll**
 
 * Go through current cells and work out which ones should be removed
 * Store the keys of these cells in an 'unused' array
