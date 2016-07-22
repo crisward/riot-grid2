@@ -20,7 +20,7 @@ grid2
   
     //- scroll area
     .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;")
-      .scrollArea(style="background:rgba(0,0,0,0.005);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px;")
+      .scrollArea(style="background:rgba(0,0,0,0.005);width:{scrollWidth}px;height:{scrollHeight-rowHeight}px;")
 
   style(type="text/stylus"). 
     grid2
