@@ -22,11 +22,27 @@
     <script src="https://rawgit.com/crisward/riot-grid2/master/lib/grid2.js"></script>
     <script type="riot/tag">
       <sample>
-        <grid2 data="{opts.collection}" columns="{opts.gridcols}" height="{500}" tabindex="1"></grid2>
+        <grid2 rowheight="50" data="{opts.collection}" columns="{opts.gridcols}" height="{500}" tabindex="1"></grid2>
       </sample>
     </script>
+    
+    <script type="riot/tag">
+      <progress>
+        <div style="border:1px solid #ccc;margin:5px;bacground:white;">
+          <div style="height:10px;background:#4d4;width:{opts.value}%">{opts.row.label}</div>
+        </div>
+      </progress>
+    </script>
+    
+    <script type="riot/tag">
+      <image>
+          <img riot-src="{opts.value}" style="margin:-10px -5px" />
+      </image>
+    </script>
+
     <script>
-      var randAge = function() { return Math.round(Math.random() * 110) + 1;};
+      var randImage = function(){return "https://randomuser.me/api/portraits/thumb/men/"+Math.round(Math.random() * 99)+".jpg";}
+      var randAge = function() { return Math.round(Math.random() * 99) + 1;};
       var randFirstname = function() {
         var names = ["Chloe", "Emily", "Megan", "Charlotte", "Jessica", "Lauren", "Sophie", "Olivia", "Hannah", "Lucy", "Georgia", "Rebecca", "Bethany", "Amy", "Ellie", "Katie", "Emma", "Abigail", "Molly", "Grace", "Courtney", "Shannon", "Caitlin", "Eleanor", "Jade", "Ella", "Leah", "Alice", "Holly", "Laura", "Anna", "Jasmine", "Sarah", "Elizabeth", "Amelia", "Rachel", "Amber", "Phoebe", "Natasha", "Niamh", "Zoe", "Paige", "Nicole", "Abbie", "Mia", "Imogen", "Lily", "Alexandra", "Chelsea", "Daisy", "Jack", "Thomas", "James", "Joshua", "Daniel", "Harry", "Samuel", "Joseph", "Matthew", "Callum", "Luke", "William", "Lewis", "Oliver", "Ryan", "Benjamin", "George", "Liam", "Jordan", "Adam", "Alexander", "Jake", "Connor", "Cameron", "Nathan", "Kieran", "Mohammed", "Jamie", "Jacob", "Michael", "Ben", "Ethan", "Charlie", "Bradley", "Brandon", "Aaron", "Max", "Dylan", "Kyle", "Robert", "Christopher", "David", "Edward", "Charles", "Owen", "Louis", "Alex", "Joe", "Rhyce"];
         return names[Math.round(Math.random() * (names.length - 1))];
@@ -40,8 +56,10 @@
       while(count<100000){
         collection.push({
           id:count,
+          image:randImage(),
           name1:randFirstname(),
           name2:randSurname(),
+          pop:randAge(),
           name3:randSurname(),
           name4:randSurname(),
           name5:randSurname(),
@@ -74,8 +92,10 @@
       }
       var gridcols = [
         {label:'#',field:'id',width:50,fixed:true},
-        {label:'name1',field:"name1",width:120,fixed:true},
-        {label:'name2',field:"name2",width:120},
+        {label:"image",field:"image",width:50,tag:"image",fixed:true},
+        {label:'name',field:"Forename",width:120,fixed:true},
+        {label:'surname',field:"Surname",width:120,fixed:true},
+        {label:"popularity",field:"pop",width:200,tag:"progress"},
         {label:"name3",field:"name3",width:120},
         {label:"name4",field:"name4",width:120},
         {label:"name5",field:"name5",width:120},
