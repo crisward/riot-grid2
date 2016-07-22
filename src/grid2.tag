@@ -77,7 +77,6 @@ grid2
       @visCells = null
       @activeCells = []
       @activeRows = []
-      @scrollWait = null
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
 
@@ -86,7 +85,6 @@ grid2
       @overlay.addEventListener('dlbclick',@pushThroughClick)
       
     @on 'unmount',->
-      clearTimeout(@scrollWait) if @scrollWait
       @overlay.removeEventListener('click',@pushThroughClick)
       @overlay.removeEventListener('dlbclick',@pushThroughClick)
 
