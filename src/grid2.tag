@@ -127,7 +127,11 @@ grid2
       @activeRows.length = 0
     
     @pushThroughClick = (e)=>
-      event = new MouseEvent(e.type, e)
+      try
+        event = new MouseEvent(e.type, e)
+      catch 
+        event = document.createEvent('MouseEvents')
+        event.initMouseEvent(e.type, e)
       e.preventDefault()
       @overlay.style.display = "none"
       elem = document.elementFromPoint(e.pageX,e.pageY)

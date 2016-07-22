@@ -66,6 +66,20 @@ describe 'grid2',->
     simulant.fire(document.querySelector('.cell'),'click')
     expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
 
+  it "should only select one row at a time without meta key",->
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+    simulant.fire(document.querySelector('.cell'),'click')
+    expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+    simulant.fire(document.querySelectorAll('.cell')[12],'click')
+    expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+
+  it "should toggle a row if clicked twice with meta key",->
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+    simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
+    expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+    simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+
   it "should call onclick on row when cell is clicked",->
     simulant.fire(document.querySelector('.cell'),'click')
     expect(spyclick.calledOnce).to.be.true
@@ -85,7 +99,16 @@ describe 'grid2',->
     riot.update() 
     expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
 
-    
+  it "should pass events through overlay to grid below",->
+    e = document.createEvent('MouseEvents')
+    # e = simulant( 'click' )
+    #e.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY)...
+    if document.createEvent
+      e.initMouseEvent('click', true, true, window, 1, 100, 50, 100, 50)
+    simulant.fire(document.querySelector('#overlay'),e)
+    expect(spyclick.calledOnce).to.be.true
+    expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+
 
 # it "should call ondblclick callback when row is double clicked",->
 #   simulant.fire(document.querySelectorAll('.gridrow')[2],'dblclick')
