@@ -2,26 +2,26 @@ grid2
   .gridwrap(style="height:{opts.height}px")
   
     //- main body
-    .gridbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
-      .fixedLeft(style="transform:translate3d({0-gridbody[1].scrollLeft}px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+    .gridbody#mainbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
+      .fixedLeft(style="transform:translate3d({0-overlay.scrollLeft}px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
         
-    //- scroll area
-    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px;")
-      .scrollArea(style="background:rgba(0,0,0,0.05);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px;")
-       
     //- fixed top
-    .gridbody(style="height:{rowHeight}px;margin-right:15px")
+    .gridbody#header(style="height:{rowHeight}px;margin-right:15px")
       .header(style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
         .headercell(each="{headers.main}",no-reorder,style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed left
     .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
-      .fixedLeft(style="transform:translate3d(0px,{0-gridbody[1].scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .header(style="top:{gridbody[1].scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
+      .fixedLeft(style="transform:translate3d(0px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
+        .header(style="top:{overlay.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
         gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
   
+    //- scroll area
+    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;")
+      .scrollArea(style="background:rgba(0,0,0,0.005);width:{scrollWidth-fixedLeftWidth}px;height:{scrollHeight-rowHeight}px;")
+
   style(type="text/stylus"). 
     grid2
       display block
@@ -80,6 +80,7 @@ grid2
       @scrollWait = null
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
+
       @update()
       @overlay.addEventListener('click',@pushThroughClick)
       @overlay.addEventListener('dlbclick',@pushThroughClick)
@@ -96,11 +97,11 @@ grid2
         @columns = opts.columns
         @rows=[]
         calcPos()
-        @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
+        @visCells = calcVisible(@rows,@overlay,@rowHeight)
       if !@visCells
-        @visCells = calcVisible(@rows,@gridbody[1],@rowHeight)
+        @visCells = calcVisible(@rows,@overlay,@rowHeight)
       else
-        @visCells = reCalc(@visCells,@rows,@gridbody[1],@rowHeight)
+        @visCells = reCalc(@visCells,@rows,@overlay,@rowHeight)
 
     @handleClick = (e)=>
       @deselect() if !e.metaKey
@@ -178,7 +179,7 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      @gridbody[2].scrollLeft = @gridbody[1].scrollLeft
+      @header.scrollLeft = @overlay.scrollLeft
       @update()
             
     calcArea = (gridbody)->
