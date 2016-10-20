@@ -19,7 +19,7 @@ grid2
         gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
   
     //- scroll area
-    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;")
+    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
       .scrollArea(style="background:rgba(0,0,0,0.005);width:{scrollWidth}px;height:{scrollHeight-rowHeight}px;")
 
   style(type="text/stylus"). 
