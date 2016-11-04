@@ -4,7 +4,7 @@ grid2
     //- main body
     .gridbody#mainbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(style="transform:translate3d({0-overlay.scrollLeft}px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",value="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
         
     //- fixed top
     .gridbody#header(style="height:{rowHeight}px;margin-right:15px")
@@ -16,7 +16,7 @@ grid2
       .fixedLeft(style="transform:translate3d(0px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
         .header(style="top:{overlay.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        gridcelltag.cell(tag="{cell.tag}",value="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",value="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
   
     //- scroll area
     .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
@@ -125,17 +125,18 @@ grid2
       @activeRows.length = 0
     
     @pushThroughClick = (e)=>
+      top = @overlay.scrollTop #fix ie scrolling issue during click
       try
         event = new MouseEvent(e.type, e)
       catch 
         event = document.createEvent('MouseEvents')
-        event.initMouseEvent(e.type, e)
+        event.initMouseEvent(e.type, true,true,window,0,e.screenX,e.screenY,e.clientX,e.clientY,e.ctrlKey,e.altKey,e.shiftKey,e.metaKey,e.button,e.target)
       e.preventDefault()
       @overlay.style.display = "none"
       elem = document.elementFromPoint(e.pageX,e.pageY)
       elem.dispatchEvent(event)
       @overlay.style.display = "block"
-      @update()
+      @overlay.scrollTop = top
      
     calcPos= => # work out co-ordinates of all cells
       left = 0
@@ -172,6 +173,7 @@ grid2
             fixed:if col.fixed then true else false
             ridx:ridx
             key:key
+            col:col
           key++
           left+=col.width
       @scrollWidth = left
