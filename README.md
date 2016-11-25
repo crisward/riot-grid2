@@ -6,6 +6,8 @@
 [riot-grid](https://github.com/crisward/riot-grid) Version 2.
 With new api and optimised for high column numbers.
 
+This version is for Riot v2.*
+
 ## Demo
 
 Early demo is available here - http://crisward.github.io/riot-grid2/
