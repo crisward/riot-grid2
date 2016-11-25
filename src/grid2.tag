@@ -2,25 +2,25 @@ grid2
   .gridwrap(style="height:{opts.height}px")
   
     //- main body
-    .gridbody#mainbody(style="left:{fixedLeftWidth}px;top:{rowHeight}px;bottom:0px")
-      .fixedLeft(style="transform:translate3d({0-overlay.scrollLeft}px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",value="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+    .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px")
+      .fixedLeft(riot-style="transform:translate3d({fixedLeft.left}px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
+        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
         
     //- fixed top
-    .gridbody#header(style="height:{rowHeight}px;margin-right:15px")
-      .header(style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",no-reorder,style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
+    .gridbody(ref="header",riot-style="height:{rowHeight}px;margin-right:15px")
+      .header(riot-style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
+        .headercell(each="{headers.main}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed left
-    .gridbody(style="width:{fixedLeftWidth}px;height:{opts.height-2}px")
-      .fixedLeft(style="transform:translate3d(0px,{0-overlay.scrollTop}px,0px);backface-visibility: hidden;width:{fixedLeftWidth}px;bottom:1px;z-index:2;")
-        .header(style="top:{overlay.scrollTop}px;left:0px;width:{fixedLeftWidth}px;height:{rowHeight}px")
-          .headercell(each="{headers.fixed}",style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",value="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;") {cell.text}
+    .gridbody(riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
+      .fixedLeft(riot-style="transform:translate3d(0px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
+        .header(riot-style="top:{0 - fixedLeft.top}px;left:0px;width:{fixedLeft.width}px;height:{rowHeight}px")
+          .headercell(each="{headers.fixed}",riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
+        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
   
     //- scroll area
-    .gridbody#overlay(onscroll='{scrolling}',style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
-      .scrollArea(style="background:rgba(0,0,0,0.005);width:{scrollWidth}px;height:{scrollHeight-rowHeight}px;")
+    .gridbody(ref="overlay",onscroll='{scrolling}',riot-style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
+      .scrollArea(riot-style="background:rgba(0,0,0,0.005);width:{scrollWidth}px;height:{scrollHeight-rowHeight}px;")
 
   style(type="text/stylus"). 
     grid2
@@ -72,34 +72,40 @@ grid2
         transform: translateZ(0)
       
   script(type='text/coffee').
-    
-    @on 'mount',->
-      @visCells = null
+
+    @on 'before-mount',->
+      @fixedLeft = {left:0,top:0,width:0}
+      @headers = {fixed:[],main:[]}
+      @visCells = {fixed:[],main:[]}
       @activeCells = []
       @activeRows = []
+
+    @on 'mount',->
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
-
       @update()
-      @overlay.addEventListener('click',@pushThroughClick)
-      @overlay.addEventListener('dlbclick',@pushThroughClick)
+      @refs.overlay.addEventListener('click',@pushThroughClick)
+      @refs.overlay.addEventListener('dlbclick',@pushThroughClick)
       
-    @on 'unmount',->
-      @overlay.removeEventListener('click',@pushThroughClick)
-      @overlay.removeEventListener('dlbclick',@pushThroughClick)
+    @on 'before-unmount',->
+      @refs.overlay.removeEventListener('click',@pushThroughClick)
+      @refs.overlay.removeEventListener('dlbclick',@pushThroughClick)
 
     @on 'update',->
       return if !@gridbody || !opts.data || !opts.columns
+      if @refs.overlay
+        @fixedLeft.left = 0 - @refs.overlay.scrollLeft
+        @fixedLeft.top = 0 - @refs.overlay.scrollTop
       if opts.columns && opts.data && (@columns != opts.columns || @data != opts.data)
         @data = opts.data
         @columns = opts.columns
         @rows=[]
         calcPos()
-        @visCells = calcVisible(@rows,@overlay,@rowHeight)
+        @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
       if !@visCells
-        @visCells = calcVisible(@rows,@overlay,@rowHeight)
+        @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
       else
-        @visCells = reCalc(@visCells,@rows,@overlay,@rowHeight)
+        @visCells = reCalc(@visCells,@rows,@refs.overlay,@rowHeight)
 
     @handleClick = (e)=>
       @deselect() if !e.metaKey
@@ -125,24 +131,25 @@ grid2
       @activeRows.length = 0
     
     @pushThroughClick = (e)=>
-      top = @overlay.scrollTop #fix ie scrolling issue during click
+      top = @refs.overlay.scrollTop #fix ie scrolling issue during click
       try
         event = new MouseEvent(e.type, e)
       catch 
         event = document.createEvent('MouseEvents')
         event.initMouseEvent(e.type, true,true,window,0,e.screenX,e.screenY,e.clientX,e.clientY,e.ctrlKey,e.altKey,e.shiftKey,e.metaKey,e.button,e.target)
       e.preventDefault()
-      @overlay.style.display = "none"
+      @refs.overlay.style.display = "none"
       elem = document.elementFromPoint(e.pageX,e.pageY)
-      elem.dispatchEvent(event)
-      @overlay.style.display = "block"
-      @overlay.scrollTop = top
+      console.log elem
+      elem.dispatchEvent(event) if elem.dispatchEvent?
+      @refs.overlay.style.display = "block"
+      @refs.overlay.scrollTop = top
      
     calcPos= => # work out co-ordinates of all cells
       left = 0
       top = 0
       @rows = []
-      @fixedLeftWidth = @columns.filter((col)-> col.fixed?).reduce ((a,col)-> a+col.width),0
+      @fixedLeft.width = @columns.filter((col)-> col.fixed?).reduce ((a,col)-> a+col.width),0
       @headers = {fixed:[],main:[]}
       left = 0
       for col,cidx in @columns
@@ -164,8 +171,8 @@ grid2
         for col,cidx in @columns
           @rows[ridx].data.push
             top:if col.fixed then top else top-@rowHeight
-            left: if col.fixed then left else left-@fixedLeftWidth
-            right:if col.fixed then col.width+left else col.width+left-@fixedLeftWidth
+            left: if col.fixed then left else left-@fixedLeft.width
+            right:if col.fixed then col.width+left else col.width+left-@fixedLeft.width
             bottom:top+@rowHeight
             width:col.width
             text:row[col.field]
@@ -182,7 +189,7 @@ grid2
       
     @scrolling = (e)=>
       e.preventUpdate = true
-      @header.scrollLeft = @overlay.scrollLeft
+      @refs.header.scrollLeft = @refs.overlay.scrollLeft
       @update()
             
     calcArea = (gridbody)->
@@ -235,27 +242,5 @@ grid2
       return visible
 
 
-gridcelltag 
-  div(riot-tag="{opts.tag}")
-    <yield />
-    
-  script(type="text/coffee").
-    # copy of riot-subtag
-    @prevtag = null
-
-    @on 'mount',->
-      return if !opts.tag
-      @prevtag = opts.tag
-      @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
-
-    @on 'update',->
-      if @prevtag && @prevtag != opts.tag
-        @prevtag = opts.tag
-        @mountedTag.unmount(true)
-        @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
-      else if @mountedTag
-        @mountedTag.opts = opts
-        @mountedTag.update()
-
-    @on 'unmount',->
-      @mountedTag.unmount(true) if @mountedTag
+gridcelltag
+  {opts.val}
