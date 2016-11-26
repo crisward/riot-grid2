@@ -4,19 +4,19 @@ grid2
     //- main body
     .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(riot-style="transform:translate3d({fixedLeft.left}px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
-        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
+        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",no-reorder,val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
         
     //- fixed top
     .gridbody(ref="header",riot-style="height:{rowHeight}px;margin-right:15px")
       .header(riot-style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
+        .headercell(each="{headers.main}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed left
     .gridbody(riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
       .fixedLeft(riot-style="transform:translate3d(0px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
         .header(riot-style="top:{0 - fixedLeft.top}px;left:0px;width:{fixedLeft.width}px;height:{rowHeight}px")
-          .headercell(each="{headers.fixed}",riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
+          .headercell(each="{headers.fixed}",no-reorder,riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
+        gridcelltag.cell(tag="{cell.tag}",no-reorder,data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
   
     //- scroll area
     .gridbody(ref="overlay",onscroll='{scrolling}',riot-style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
@@ -103,7 +103,7 @@ grid2
         @rows=[]
         calcPos()
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
-      else if @visCells.main.length == 0
+      if @visCells.main.length == 0
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
       else
         @visCells = reCalc(@visCells,@rows,@refs.overlay,@rowHeight)
@@ -114,6 +114,7 @@ grid2
       e.preventUpdate = true
       @deselect() if !e.metaKey
       if e.metaKey then @toggleRow(e.item.cell.ridx) else @selectRow(e.item.cell.ridx)
+      setTimeout => @update()
     
     @toggleRow = (ridx)=>
       if @activeRows.indexOf(ridx)>-1 then  @deselectRow(ridx) else @selectRow(ridx)
@@ -135,6 +136,7 @@ grid2
       @activeRows.length = 0
     
     @pushThroughClick = (e)=>
+      e.stopPropagation()
       e.preventUpdate = true
       top = @refs.overlay.scrollTop #fix ie scrolling issue during click
       try
@@ -246,4 +248,25 @@ grid2
 
 
 gridcelltag
-  {opts.val}
+  div(riot-tag="{opts.tag}")
+    <yield />
+    
+  script(type="text/coffee").
+    @prevtag = null
+
+    @on 'mount',->
+      return if !opts.tag
+      @prevtag = opts.tag
+      @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
+
+    @on 'update',->
+      if @prevtag && @prevtag != opts.tag
+        @prevtag = opts.tag
+        @mountedTag.unmount(true)
+        @mountedTag = riot.mount(@root.querySelector('div'),opts.tag,opts)[0]
+      else if @mountedTag
+        @mountedTag.opts = opts
+        @mountedTag.update()
+
+    @on 'unmount',->
+      @mountedTag.unmount(true) if @mountedTag

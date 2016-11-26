@@ -61,35 +61,52 @@ describe 'grid2',->
     expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
     expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
  
-  # it "should change class to active when cell is clicked",->
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
-  #   simulant.fire(document.querySelector('.cell'),'click')
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+  it "should change class to active when cell is clicked",(done)->
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+    simulant.fire(document.querySelector('.cell'),'click')
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+      done()
 
-  # it "should only select one row at a time without meta key",->
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
-  #   simulant.fire(document.querySelector('.cell'),'click')
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
-  #   simulant.fire(document.querySelectorAll('.cell')[12],'click')
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+  it "should only select one row at a time without meta key",(done)->
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+    simulant.fire(document.querySelector('.cell'),'click')
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+      simulant.fire(document.querySelectorAll('.cell')[12],'click')
+      setTimeout =>
+        expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+        done()
+      ,5
+    ,5
 
-  # it "should toggle a row if clicked twice with meta key",->
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
-  #   simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
-  #   simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+  it "should toggle a row if clicked twice with meta key",(done)->
+    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+    simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+      simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
+      setTimeout =>
+        expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+        done()
+      ,5
+    ,5
 
   it "should call onclick on row when cell is clicked",->
     simulant.fire(document.querySelector('.cell'),'click')
     expect(spyclick.callCount).to.equal(1)
     expect(spyclick.args[0][0][0]).to.eql(griddata[0])
 
-  # it "should deselect row if meta-clicked",->
+  # it "should deselect row if meta-clicked",(done)->
   #   simulant.fire(document.querySelector('.cell'),'click')
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
-  #   simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
-  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+  #   setTimeout =>
+  #     expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+  #     simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
+  #     setTimeout =>
+  #       expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+  #       done()
+  #     ,5
+  #   ,5
   
   it "should show custom tag",->
     expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
