@@ -31,7 +31,7 @@ describe 'grid2',->
     @node = document.body.appendChild(@domnode)
     spyclick = sinon.spy()
     @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
-    @tag.update()
+    riot.update()
     rows = document.querySelectorAll('.gridrow')
 
   afterEach ->
@@ -77,8 +77,7 @@ describe 'grid2',->
       setTimeout =>
         expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
         done()
-      ,5
-    ,5
+
 
   it "should toggle a row if clicked twice with meta key",(done)->
     expect(@domnode.querySelectorAll('.active').length).to.equal(0)
@@ -89,33 +88,32 @@ describe 'grid2',->
       setTimeout =>
         expect(@domnode.querySelectorAll('.active').length).to.equal(0)
         done()
-      ,5
-    ,5
-
-  it "should call onclick on row when cell is clicked",->
+ 
+  it "should call onclick on row when cell is clicked",(done)->
     simulant.fire(document.querySelector('.cell'),'click')
-    expect(spyclick.callCount).to.equal(1)
-    expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+    setTimeout =>
+      expect(spyclick.callCount).to.equal(1)
+      expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+      done()
 
-  # it "should deselect row if meta-clicked",(done)->
-  #   simulant.fire(document.querySelector('.cell'),'click')
-  #   setTimeout =>
-  #     expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
-  #     simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
-  #     setTimeout =>
-  #       expect(@domnode.querySelectorAll('.active').length).to.equal(0)
-  #       done()
-  #     ,5
-  #   ,5
-  
-  it "should show custom tag",->
+  it "should deselect row if meta-clicked",(done)->
+    simulant.fire(document.querySelector('.cell'),'click')
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+      simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
+      setTimeout =>
+        expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+        done()
+
+  it "should show custom tag",(done)->
     expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
     columns[1].tag = "testcell"
     @tag.unmount(true)
     @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
-    riot.update() 
-    expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
-
+    riot.update()
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
+      done()
 
 # riotgrid 1 tests below
 
