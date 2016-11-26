@@ -1,132 +1,242 @@
 <html>
-  <head>
+
+<head>
     <title>Riot Grid 2</title>
-  </head>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-  <body>
+</head>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<body>
     <div class="container">
-      <h1>Riot Grid 2</h1>
-      <p>This is just a very quick demo of work in progress, show 100,000 rows with 30 columns (3 million cells)</p>
-      <p>
-        <ul>
-           <li>You can now select rows by clicking</li>
-           <li>Multiple rows can be toggled with cmd+click</li>
-           <li>Each column can now have a custom tag</li>
-        </ul>
-      </p>
-      <sample></sample>
+        <h1>Riot Grid 2</h1>
+        <p>This is just a very quick demo of work in progress, show 100,000 rows with 30 columns (3 million cells)</p>
+        <p>
+            <ul>
+                <li>You can now select rows by clicking</li>
+                <li>Multiple rows can be toggled with cmd+click</li>
+                <li>Each column can now have a custom tag</li>
+            </ul>
+        </p>
+        <sample></sample>
     </div>
 
     <script src="https://cdn.jsdelivr.net/riot/3.0.0/riot+compiler.min.js"></script>
     <script src="https://rawgit.com/crisward/riot-grid2/master/lib/grid2.js"></script>
     <script type="riot/tag">
-      <sample>
-        <grid2 rowheight="50" data="{opts.collection}" columns="{opts.gridcols}" height="{500}" tabindex="1"></grid2>
-      </sample>
+        <sample>
+            <grid2 rowheight="50" data="{opts.collection}" columns="{opts.gridcols}" height="{500}" tabindex="1"></grid2>
+        </sample>
     </script>
-    
+
     <script type="riot/tag">
-      <progress>
+        <progress>
         <div style="border:1px solid #ccc;margin:5px;bacground:white;">
-          <div style="height:10px;background:#4d4;width:{opts.value}%">{opts.row.label}</div>
+          <div style="height:10px;background:#4d4;width:{opts.val}%">{opts.row.label}</div>
         </div>
       </progress>
     </script>
-    
+
     <script type="riot/tag">
-      <image>
-          <img riot-src="{opts.value}" style="margin:-10px -5px" />
-      </image>
+        <image>
+            <img riot-src="{opts.val}" style="margin:-10px -5px" />
+        </image>
     </script>
 
     <script>
-      var randImage = function(){return "https://randomuser.me/api/portraits/thumb/men/"+Math.round(Math.random() * 99)+".jpg";}
-      var randAge = function() { return Math.round(Math.random() * 99) + 1;};
-      var randFirstname = function() {
-        var names = ["Chloe", "Emily", "Megan", "Charlotte", "Jessica", "Lauren", "Sophie", "Olivia", "Hannah", "Lucy", "Georgia", "Rebecca", "Bethany", "Amy", "Ellie", "Katie", "Emma", "Abigail", "Molly", "Grace", "Courtney", "Shannon", "Caitlin", "Eleanor", "Jade", "Ella", "Leah", "Alice", "Holly", "Laura", "Anna", "Jasmine", "Sarah", "Elizabeth", "Amelia", "Rachel", "Amber", "Phoebe", "Natasha", "Niamh", "Zoe", "Paige", "Nicole", "Abbie", "Mia", "Imogen", "Lily", "Alexandra", "Chelsea", "Daisy", "Jack", "Thomas", "James", "Joshua", "Daniel", "Harry", "Samuel", "Joseph", "Matthew", "Callum", "Luke", "William", "Lewis", "Oliver", "Ryan", "Benjamin", "George", "Liam", "Jordan", "Adam", "Alexander", "Jake", "Connor", "Cameron", "Nathan", "Kieran", "Mohammed", "Jamie", "Jacob", "Michael", "Ben", "Ethan", "Charlie", "Bradley", "Brandon", "Aaron", "Max", "Dylan", "Kyle", "Robert", "Christopher", "David", "Edward", "Charles", "Owen", "Louis", "Alex", "Joe", "Rhyce"];
-        return names[Math.round(Math.random() * (names.length - 1))];
-      };
-      var randSurname = function() {
-        var names = ["Smith", "Jones", "Taylor", "Williams", "Brown", "Davies", "Evans", "Wilson", "Thomas", "Roberts", "Johnson", "Lewis", "Walker", "Robinson", "Wood", "Thompson", "White", "Watson", "Jackson", "Wright", "Green", "Harris", "Cooper", "King", "Lee", "Martin", "Clarke", "James", "Morgan", "Hughes", "Edwards", "Hill", "Moore", "Clark", "Harrison", "Scott", "Young", "Morris", "Hall", "Ward", "Turner", "Carter", "Phillips", "Mitchell", "Patel", "Adams", "Campbell", "Anderson", "Allen", "Cook", "Bailey", "Parker", "Miller", "Davis", "Murphy", "Price", "Bell", "Baker", "Griffiths", "Kelly", "Simpson", "Marshall", "Collins", "Bennett", "Cox", "Richardson", "Fox", "Gray", "Rose", "Chapman", "Hunt", "Robertson", "Shaw", "Reynolds", "Lloyd", "Ellis", "Richards", "Russell", "Wilkinson", "Khan", "Graham", "Stewart", "Reid", "Murray", "Powell", "Palmer", "Holmes", "Rogers", "Stevens", "Walsh", "Hunter", "Thomson", "Matthews", "Ross", "Owen", "Mason", "Knight", "Kennedy", "Butler", "Saunders"];
-        return names[Math.round(Math.random() * (names.length - 1))];
-      };
-      var collection=[]
-      var count=0
-      while(count<100000){
-        collection.push({
-          id:count,
-          image:randImage(),
-          name1:randFirstname(),
-          name2:randSurname(),
-          pop:randAge(),
-          name3:randSurname(),
-          name4:randSurname(),
-          name5:randSurname(),
-          name6:randSurname(),
-          name7:randSurname(),
-          name8:randSurname(),
-          name9:randSurname(),
-          name10:randSurname(),
-          name11:randFirstname(),
-          name12:randSurname(),
-          name13:randSurname(),
-          name14:randSurname(),
-          name15:randSurname(),
-          name16:randSurname(),
-          name17:randSurname(),
-          name18:randSurname(),
-          name19:randSurname(),
-          name20:randSurname(),
-          name21:randFirstname(),
-          name22:randSurname(),
-          name23:randSurname(),
-          name24:randSurname(),
-          name25:randSurname(),
-          name26:randSurname(),
-          name27:randSurname(),
-          name28:randSurname(),
-          name29:randSurname()   
-        })
-        count++;
-      }
-      var gridcols = [
-        {label:'#',field:'id',width:50,fixed:true},
-        {label:"image",field:"image",width:50,tag:"image",fixed:true},
-        {label:'first name',field:"name1",width:120,fixed:true},
-        {label:'surname',field:"name2",width:120,fixed:true},
-        {label:"popularity",field:"pop",width:200,tag:"progress"},
-        {label:"name3",field:"name3",width:120},
-        {label:"name4",field:"name4",width:120},
-        {label:"name5",field:"name5",width:120},
-        {label:"name6",field:"name6",width:120},
-        {label:"name7",field:"name7",width:120},
-        {label:"name8",field:"name8",width:120},
-        {label:"name9",field:"name9",width:120},
-        {label:"name10",field:"name10",width:120},
-        {label:"name11",field:"name11",width:120},
-        {label:"name12",field:"name12",width:120},
-        {label:"name13",field:"name13",width:120},
-        {label:"name14",field:"name14",width:120},
-        {label:"name15",field:"name15",width:120},
-        {label:"name16",field:"name16",width:120},
-        {label:"name17",field:"name17",width:120},
-        {label:"name18",field:"name18",width:120},
-        {label:"name19",field:"name19",width:120},
-        {label:"name20",field:"name20",width:120},
-        {label:"name21",field:"name21",width:120},
-        {label:"name22",field:"name22",width:120},
-        {label:"name23",field:"name23",width:120},
-        {label:"name24",field:"name24",width:120},
-        {label:"name25",field:"name25",width:120},
-        {label:"name26",field:"name26",width:120},
-        {label:"name27",field:"name27",width:120},
-        {label:"name28",field:"name28",width:120},
-        {label:"name29",field:"name29",width:120}    
-      ];
+        var randImage = function() {
+            return "https://randomuser.me/api/portraits/thumb/men/" + Math.round(Math.random() * 99) + ".jpg";
+        }
+        var randAge = function() {
+            return Math.round(Math.random() * 99) + 1;
+        };
+        var randFirstname = function() {
+            var names = ["Chloe", "Emily", "Megan", "Charlotte", "Jessica", "Lauren", "Sophie", "Olivia", "Hannah", "Lucy", "Georgia", "Rebecca", "Bethany", "Amy", "Ellie", "Katie", "Emma", "Abigail", "Molly", "Grace", "Courtney", "Shannon", "Caitlin", "Eleanor", "Jade", "Ella", "Leah", "Alice", "Holly", "Laura", "Anna", "Jasmine", "Sarah", "Elizabeth", "Amelia", "Rachel", "Amber", "Phoebe", "Natasha", "Niamh", "Zoe", "Paige", "Nicole", "Abbie", "Mia", "Imogen", "Lily", "Alexandra", "Chelsea", "Daisy", "Jack", "Thomas", "James", "Joshua", "Daniel", "Harry", "Samuel", "Joseph", "Matthew", "Callum", "Luke", "William", "Lewis", "Oliver", "Ryan", "Benjamin", "George", "Liam", "Jordan", "Adam", "Alexander", "Jake", "Connor", "Cameron", "Nathan", "Kieran", "Mohammed", "Jamie", "Jacob", "Michael", "Ben", "Ethan", "Charlie", "Bradley", "Brandon", "Aaron", "Max", "Dylan", "Kyle", "Robert", "Christopher", "David", "Edward", "Charles", "Owen", "Louis", "Alex", "Joe", "Rhyce"];
+            return names[Math.round(Math.random() * (names.length - 1))];
+        };
+        var randSurname = function() {
+            var names = ["Smith", "Jones", "Taylor", "Williams", "Brown", "Davies", "Evans", "Wilson", "Thomas", "Roberts", "Johnson", "Lewis", "Walker", "Robinson", "Wood", "Thompson", "White", "Watson", "Jackson", "Wright", "Green", "Harris", "Cooper", "King", "Lee", "Martin", "Clarke", "James", "Morgan", "Hughes", "Edwards", "Hill", "Moore", "Clark", "Harrison", "Scott", "Young", "Morris", "Hall", "Ward", "Turner", "Carter", "Phillips", "Mitchell", "Patel", "Adams", "Campbell", "Anderson", "Allen", "Cook", "Bailey", "Parker", "Miller", "Davis", "Murphy", "Price", "Bell", "Baker", "Griffiths", "Kelly", "Simpson", "Marshall", "Collins", "Bennett", "Cox", "Richardson", "Fox", "Gray", "Rose", "Chapman", "Hunt", "Robertson", "Shaw", "Reynolds", "Lloyd", "Ellis", "Richards", "Russell", "Wilkinson", "Khan", "Graham", "Stewart", "Reid", "Murray", "Powell", "Palmer", "Holmes", "Rogers", "Stevens", "Walsh", "Hunter", "Thomson", "Matthews", "Ross", "Owen", "Mason", "Knight", "Kennedy", "Butler", "Saunders"];
+            return names[Math.round(Math.random() * (names.length - 1))];
+        };
+        var collection = []
+        var count = 0
+        while (count < 100000) {
+            collection.push({
+                id: count,
+                image: randImage(),
+                name1: randFirstname(),
+                name2: randSurname(),
+                pop: randAge(),
+                name3: randSurname(),
+                name4: randSurname(),
+                name5: randSurname(),
+                name6: randSurname(),
+                name7: randSurname(),
+                name8: randSurname(),
+                name9: randSurname(),
+                name10: randSurname(),
+                name11: randFirstname(),
+                name12: randSurname(),
+                name13: randSurname(),
+                name14: randSurname(),
+                name15: randSurname(),
+                name16: randSurname(),
+                name17: randSurname(),
+                name18: randSurname(),
+                name19: randSurname(),
+                name20: randSurname(),
+                name21: randFirstname(),
+                name22: randSurname(),
+                name23: randSurname(),
+                name24: randSurname(),
+                name25: randSurname(),
+                name26: randSurname(),
+                name27: randSurname(),
+                name28: randSurname(),
+                name29: randSurname()
+            })
+            count++;
+        }
+        var gridcols = [{
+            label: '#',
+            field: 'id',
+            width: 50,
+            fixed: true
+        }, {
+            label: "image",
+            field: "image",
+            width: 50,
+            tag: "image",
+            fixed: true
+        }, {
+            label: 'first name',
+            field: "name1",
+            width: 120,
+            fixed: true
+        }, {
+            label: 'surname',
+            field: "name2",
+            width: 120,
+            fixed: true
+        }, {
+            label: "popularity",
+            field: "pop",
+            width: 200,
+            tag: "progress"
+        }, {
+            label: "name3",
+            field: "name3",
+            width: 120
+        }, {
+            label: "name4",
+            field: "name4",
+            width: 120
+        }, {
+            label: "name5",
+            field: "name5",
+            width: 120
+        }, {
+            label: "name6",
+            field: "name6",
+            width: 120
+        }, {
+            label: "name7",
+            field: "name7",
+            width: 120
+        }, {
+            label: "name8",
+            field: "name8",
+            width: 120
+        }, {
+            label: "name9",
+            field: "name9",
+            width: 120
+        }, {
+            label: "name10",
+            field: "name10",
+            width: 120
+        }, {
+            label: "name11",
+            field: "name11",
+            width: 120
+        }, {
+            label: "name12",
+            field: "name12",
+            width: 120
+        }, {
+            label: "name13",
+            field: "name13",
+            width: 120
+        }, {
+            label: "name14",
+            field: "name14",
+            width: 120
+        }, {
+            label: "name15",
+            field: "name15",
+            width: 120
+        }, {
+            label: "name16",
+            field: "name16",
+            width: 120
+        }, {
+            label: "name17",
+            field: "name17",
+            width: 120
+        }, {
+            label: "name18",
+            field: "name18",
+            width: 120
+        }, {
+            label: "name19",
+            field: "name19",
+            width: 120
+        }, {
+            label: "name20",
+            field: "name20",
+            width: 120
+        }, {
+            label: "name21",
+            field: "name21",
+            width: 120
+        }, {
+            label: "name22",
+            field: "name22",
+            width: 120
+        }, {
+            label: "name23",
+            field: "name23",
+            width: 120
+        }, {
+            label: "name24",
+            field: "name24",
+            width: 120
+        }, {
+            label: "name25",
+            field: "name25",
+            width: 120
+        }, {
+            label: "name26",
+            field: "name26",
+            width: 120
+        }, {
+            label: "name27",
+            field: "name27",
+            width: 120
+        }, {
+            label: "name28",
+            field: "name28",
+            width: 120
+        }, {
+            label: "name29",
+            field: "name29",
+            width: 120
+        }];
 
-      riot.mount('sample',{collection:collection,gridcols:gridcols})
+        riot.mount('sample', {
+            collection: collection,
+            gridcols: gridcols
+        })
     </script>
-  </body>
+</body>
+
 </html>
