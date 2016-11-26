@@ -12,4 +12,4 @@ testtag
       opts.testclick(row)
 
 testcell
-  div.testcell {opts.value}
+  div.testcell {opts.val}

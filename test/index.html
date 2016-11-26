@@ -18,7 +18,7 @@
     <script type="riot/tag">
         <progress>
           <div style="border:1px solid #ccc;margin:5px;bacground:white;">
-            <div riot-style="height:10px;background:#4d4;width:{opts.val}%">{opts.val}</div>
+            <div riot-style="height:10px;background:#4d4;width:{opts.val}%"></div>
           </div>
         </progress>
     </script>
@@ -51,7 +51,7 @@
         };
         var collection = []
         var count = 0
-        while (count < 100) {
+        while (count < 1000) {
             collection.push({
                 id: count,
                 name1: randFirstname(),

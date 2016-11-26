@@ -4,19 +4,19 @@ grid2
     //- main body
     .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(riot-style="transform:translate3d({fixedLeft.left}px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
-        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
+        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
         
     //- fixed top
     .gridbody(ref="header",riot-style="height:{rowHeight}px;margin-right:15px")
       .header(riot-style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
+        .headercell(each="{headers.main}",riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
     
     //- fixed left
     .gridbody(riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
       .fixedLeft(riot-style="transform:translate3d(0px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
         .header(riot-style="top:{0 - fixedLeft.top}px;left:0px;width:{fixedLeft.width}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",no-reorder,riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
+        div.cell(data-is="{cell.tag || 'gridcelltag'}",data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{rowHeight}px;")
   
     //- scroll area
     .gridbody(ref="overlay",onscroll='{scrolling}',riot-style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
@@ -79,13 +79,14 @@ grid2
       @visCells = {fixed:[],main:[]}
       @activeCells = []
       @activeRows = []
+      @rows=[]
 
     @on 'mount',->
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
-      @update()
       @refs.overlay.addEventListener('click',@pushThroughClick)
       @refs.overlay.addEventListener('dlbclick',@pushThroughClick)
+      @update()
       
     @on 'before-unmount',->
       @refs.overlay.removeEventListener('click',@pushThroughClick)
@@ -102,12 +103,15 @@ grid2
         @rows=[]
         calcPos()
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
-      if !@visCells
+      else if @visCells.main.length == 0
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
       else
         @visCells = reCalc(@visCells,@rows,@refs.overlay,@rowHeight)
 
     @handleClick = (e)=>
+      e.preventDefault()
+      e.stopPropagation()
+      e.preventUpdate = true
       @deselect() if !e.metaKey
       if e.metaKey then @toggleRow(e.item.cell.ridx) else @selectRow(e.item.cell.ridx)
     
@@ -131,6 +135,7 @@ grid2
       @activeRows.length = 0
     
     @pushThroughClick = (e)=>
+      e.preventUpdate = true
       top = @refs.overlay.scrollTop #fix ie scrolling issue during click
       try
         event = new MouseEvent(e.type, e)
@@ -140,8 +145,7 @@ grid2
       e.preventDefault()
       @refs.overlay.style.display = "none"
       elem = document.elementFromPoint(e.pageX,e.pageY)
-      console.log elem
-      elem.dispatchEvent(event) if elem.dispatchEvent?
+      elem.dispatchEvent(event)
       @refs.overlay.style.display = "block"
       @refs.overlay.scrollTop = top
      
@@ -191,7 +195,7 @@ grid2
       e.preventUpdate = true
       @refs.header.scrollLeft = @refs.overlay.scrollLeft
       @update()
-            
+
     calcArea = (gridbody)->
       top:gridbody.scrollTop
       left:gridbody.scrollLeft
@@ -212,7 +216,6 @@ grid2
           else if !(r2.left > r1.right || r2.right < r1.left)
             visible.push r2
           break if r2.left > r1.right
-          
       return {main:visible,fixed:visiblefixed}
     
     reCalc=(visCells,rows,gridbody,rowHeight)->

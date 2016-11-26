@@ -31,7 +31,7 @@ describe 'grid2',->
     @node = document.body.appendChild(@domnode)
     spyclick = sinon.spy()
     @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
-    riot.update()
+    @tag.update()
     rows = document.querySelectorAll('.gridrow')
 
   afterEach ->
@@ -61,10 +61,10 @@ describe 'grid2',->
     expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
     expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
  
-  it "should change class to active when cell is clicked",->
-    expect(@domnode.querySelectorAll('.active').length).to.equal(0)
-    simulant.fire(document.querySelector('.cell'),'click')
-    expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
+  # it "should change class to active when cell is clicked",->
+  #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
+  #   simulant.fire(document.querySelector('.cell'),'click')
+  #   expect(@domnode.querySelectorAll('.active').length).to.equal(columns.length)
 
   # it "should only select one row at a time without meta key",->
   #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
@@ -80,10 +80,10 @@ describe 'grid2',->
   #   simulant.fire(document.querySelectorAll('.cell')[5],'click',{metaKey:true})
   #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
 
-  # it "should call onclick on row when cell is clicked",->
-  #   simulant.fire(document.querySelector('.cell'),'click')
-  #   expect(spyclick.calledOnce).to.be.true
-  #   expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+  it "should call onclick on row when cell is clicked",->
+    simulant.fire(document.querySelector('.cell'),'click')
+    expect(spyclick.callCount).to.equal(1)
+    expect(spyclick.args[0][0][0]).to.eql(griddata[0])
 
   # it "should deselect row if meta-clicked",->
   #   simulant.fire(document.querySelector('.cell'),'click')
@@ -91,23 +91,13 @@ describe 'grid2',->
   #   simulant.fire(document.querySelector('.cell'),'click',{metaKey:true})
   #   expect(@domnode.querySelectorAll('.active').length).to.equal(0)
   
-  # it "should show custom tag",->
-  #   expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
-  #   columns[1].tag = "testcell"
-  #   @tag.unmount(true)
-  #   @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
-  #   riot.update() 
-  #   expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
-
-  # it "should pass events through overlay to grid below",->
-  #   e = document.createEvent('MouseEvents')
-  #   # e = simulant( 'click' )
-  #   #e.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY)...
-  #   if document.createEvent
-  #     e.initMouseEvent('click', true, true, window, 1, 100, 50, 100, 50)
-  #   simulant.fire(document.querySelector('#overlay'),e)
-  #   expect(spyclick.calledOnce).to.be.true
-  #   expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+  it "should show custom tag",->
+    expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
+    columns[1].tag = "testcell"
+    @tag.unmount(true)
+    @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
+    riot.update() 
+    expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
 
 
 # riotgrid 1 tests below
