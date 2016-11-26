@@ -1,6 +1,6 @@
 {
     "name": "riot-grid2",
-    "version": "1.0.1",
+    "version": "3.0.0",
     "description": "Version 2 of Riot Grid - with optimised columns and new api",
     "main": "lib/grid2.js",
     "repository": {

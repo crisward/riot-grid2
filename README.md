@@ -6,8 +6,9 @@
 [riot-grid](https://github.com/crisward/riot-grid) Version 2.
 With new api and optimised for high column numbers.
 
-The version on Master is for use with Riot.js v3.* 
-I'm in the process of updating this, hopefully this will be finished soon.
+`The version is for use with Riot.js v3.*`
+
+Please see Riot2 branch for a riot v2 version
 
 ## Demo
 
