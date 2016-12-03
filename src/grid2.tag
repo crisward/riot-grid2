@@ -80,18 +80,17 @@ grid2
       @activeCells = []
       @activeRows = []
       @rows=[]
-
+      @pushevents = ['click','dblclick','mousedown','mouseup']
+      
     @on 'mount',->
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
-      @refs.overlay.addEventListener('click',@pushThroughClick)
-      @refs.overlay.addEventListener('dlbclick',@pushThroughClick)
+      @pushevents.forEach (eventname)=> @refs.overlay.addEventListener(eventname,@pushThroughEvent)
       @update()
       
     @on 'before-unmount',->
-      @refs.overlay.removeEventListener('click',@pushThroughClick)
-      @refs.overlay.removeEventListener('dlbclick',@pushThroughClick)
-
+      @pushevents.forEach (eventname)=> @refs.overlay.removeEventListener(eventname,@pushThroughEvent)
+ 
     @on 'update',->
       return if !@gridbody || !opts.data || !opts.columns
       if @refs.overlay
@@ -135,7 +134,7 @@ grid2
       @activeCells.length = 0
       @activeRows.length = 0
     
-    @pushThroughClick = (e)=>
+    @pushThroughEvent= (e)=>
       e.stopPropagation()
       e.preventUpdate = true
       top = @refs.overlay.scrollTop #fix ie scrolling issue during click

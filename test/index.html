@@ -25,9 +25,14 @@
 
     <script type="riot/tag">
         <image>
-            <img riot-src="{opts.val}" style="margin:-10px -5px" />
+            <img riot-src="{opts.val}" class="{active:isActive}" style="margin:-10px -5px" onmouseover="{isActive=true}" onmouseout="{isActive=false}" />
         </image>
     </script>
+    <style>
+        img.active {
+            border: 1px solid red;
+        }
+    </style>
 
     <sample></sample>
 
