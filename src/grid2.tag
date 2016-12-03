@@ -80,7 +80,7 @@ grid2
       @activeCells = []
       @activeRows = []
       @rows=[]
-      @pushevents = ['click','dblclick','mousedown','mouseup']
+      @pushevents = ['click','dblclick','mousedown','mouseup','mousemove']
       
     @on 'mount',->
       @rowHeight = +opts.rowheight || 40
