@@ -247,7 +247,7 @@ grid2
 
 
 gridcelltag
-  div(riot-tag="{opts.tag}")
+  div
     <yield />
     
   script(type="text/coffee").
