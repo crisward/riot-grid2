@@ -61,15 +61,17 @@ describe 'grid2',->
     expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
     expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
  
-  it "should pass events through overlay to grid below",->
+  it "should pass events through overlay to grid below",(done)->
     e = document.createEvent('MouseEvents')
     # e = simulant( 'click' )
     #e.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY)...
     if document.createEvent
       e.initMouseEvent('click', true, true, window, 1, 100, 50, 100, 50)
     simulant.fire(document.querySelector('[ref=overlay]'),e)
-    expect(spyclick.calledOnce).to.be.true
-    expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+    setTimeout ->
+      expect(spyclick.calledOnce).to.be.true
+      expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+      done()
 
   it "should change class to active when cell is clicked",(done)->
     expect(@domnode.querySelectorAll('.active').length).to.equal(0)
