@@ -51,10 +51,12 @@ describe 'grid2',->
      expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
      expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
 
-  it "should render only enough rows after scrolling",->
+  it "should render only enough rows after scrolling", (done)->
     document.querySelector('[ref=overlay]').scrollTop = 1000
-    expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
-    expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+    setTimeout =>
+        expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
+        expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+        done()
    
   it "should render only enough rows after scrolling (again)",->
     document.querySelector('.gridbody').scrollTop = 4389
