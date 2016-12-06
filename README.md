@@ -68,7 +68,7 @@ Tags that are passed to the column reference will be passed the following attrib
 |name       | Type  |Description
 |------     |------ |------
 |cell		|object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `active` `tag` `text` `ridx` `col` ridx is the row index, col is the column information you defined in columns including any custom keys you add.
-|value		|string |The value of the field passed in
+|val		|string |The value of the field passed in
 |data       |array  |The data passed into the grid
 
 

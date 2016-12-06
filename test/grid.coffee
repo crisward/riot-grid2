@@ -129,6 +129,7 @@ describe 'grid2',->
     riot.update()
     setTimeout =>
       expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
+      expect(@domnode.querySelectorAll('.testcell')[0].textContent).to.equal(griddata[0].first_name)
       done()
 
 
