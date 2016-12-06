@@ -58,10 +58,12 @@ describe 'grid2',->
         expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
         done()
    
-  it "should render only enough rows after scrolling (again)",->
+  it "should render only enough rows after scrolling (again)", (done) ->
     document.querySelector('.gridbody').scrollTop = 4389
-    expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
-    expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+    setTimeout =>
+        expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
+        expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+        done()
  
   it "should pass events through overlay to grid below",(done)->
     e = document.createEvent('MouseEvents')
