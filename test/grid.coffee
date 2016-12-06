@@ -13,7 +13,7 @@ columns = []
 test = {}
 rows = null
 
-# id:i,first_name:randFirstname(),surname:randSurname(),age:randAge()
+# id:i,first_name:randFirstname(),surname:randSurname(),age:randAge(),name:{first:randFirstname(),last:randSurname()}
 
 columns = [
   {field:"id",label:"#",width:20,fixed:true}
@@ -121,7 +121,7 @@ describe 'grid2',->
         expect(@domnode.querySelectorAll('.active').length).to.equal(0)
         done()
 
-  it "should show custom tag",(done)->
+  it "should show custom tag with text value",(done)->
     expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
     columns[1].tag = "testcell"
     @tag.unmount(true)
@@ -130,6 +130,18 @@ describe 'grid2',->
     setTimeout =>
       expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
       expect(@domnode.querySelectorAll('.testcell')[0].textContent).to.equal(griddata[0].first_name)
+      done()
+
+  it "should show custom tag with object value",(done)->
+    expect(@domnode.querySelectorAll('.testcell-obj').length).to.equal(0)
+    columns[1].tag = "testcell-obj"
+    columns[1].field = "name"
+    @tag.unmount(true)
+    @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
+    riot.update()
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.testcell-obj').length).to.be.gt(1)
+      expect(@domnode.querySelectorAll('.testcell-obj')[0].textContent).to.equal("#{griddata[0].name.last}, #{griddata[0].name.first}")
       done()
 
 

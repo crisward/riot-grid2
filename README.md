@@ -68,16 +68,20 @@ Tags that are passed to the column reference will be passed the following attrib
 |name       | Type  |Description
 |------     |------ |------
 |cell		|object |An object which decribed the grid cell. It containts the keys `left` `top` `width` `active` `tag` `text` `ridx` `col` ridx is the row index, col is the column information you defined in columns including any custom keys you add.
-|val		|string |The value of the field passed in
+|val		|(any) |The value of the field passed in.  Commonly the value is a string, but it may also be an object that the tag will destructure.
 |data       |array  |The data passed into the grid
 
 
-Example
+Examples
 
 ```html
 <image-cell>
-	<img src="{opts.value}" style="width:{opts.cell.width}px" />
+	<img src="{opts.val}" style="width:{opts.cell.width}px" />
 </image-cell>
+
+<name-cell>
+    <span>{opts.val.last}, {opts.val.first}</span>
+</name-cell>
 ```
 
 

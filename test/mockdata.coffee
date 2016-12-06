@@ -8,6 +8,6 @@ module.exports = (count)->
     names = ["Smith","Jones","Taylor","Williams","Brown","Davies","Evans","Wilson","Thomas","Roberts","Johnson","Lewis","Walker","Robinson","Wood","Thompson","White","Watson","Jackson","Wright","Green","Harris","Cooper","King","Lee","Martin","Clarke","James","Morgan","Hughes","Edwards","Hill","Moore","Clark","Harrison","Scott","Young","Morris","Hall","Ward","Turner","Carter","Phillips","Mitchell","Patel","Adams","Campbell","Anderson","Allen","Cook","Bailey","Parker","Miller","Davis","Murphy","Price","Bell","Baker","Griffiths","Kelly","Simpson","Marshall","Collins","Bennett","Cox","Richardson","Fox","Gray","Rose","Chapman","Hunt","Robertson","Shaw","Reynolds","Lloyd","Ellis","Richards","Russell","Wilkinson","Khan","Graham","Stewart","Reid","Murray","Powell","Palmer","Holmes","Rogers","Stevens","Walsh","Hunter","Thomson","Matthews","Ross","Owen","Mason","Knight","Kennedy","Butler","Saunders"]
     names[Math.round(Math.random()*(names.length-1))]
 
-  griddata    = [0...count].map (i)-> {id:i,first_name:randFirstname(),surname:randSurname(),age:randAge()}
+  griddata    = [0...count].map (i)-> {id:i,first_name:randFirstname(),surname:randSurname(),age:randAge(),name:{first:randFirstname(),last:randSurname()}}
 
   return griddata

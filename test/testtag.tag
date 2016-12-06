@@ -13,3 +13,6 @@ testtag
 
 testcell
   div.testcell {opts.val}
+
+testcell-obj
+  div.testcell-obj {opts.val.last}, {opts.val.first}
