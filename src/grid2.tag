@@ -166,7 +166,7 @@ grid2
           width:col.width
           text:col.label
           tag:col.tag
-          classes: if Array.isArray(col.class) then col.class.join(' ') else col.class
+          classes: if Array.isArray(col.class) then col.class.join(' ') else col.class || ""
         left+=col.width
 
       key = 0 #every cell has unique key
@@ -187,7 +187,7 @@ grid2
             ridx:ridx
             key:key
             col:col
-            classes: -> (if @active then "active " else "") + (if Array.isArray(@col.class) then @col.class.join(' ') else @col.class)
+            classes: -> (if @active then "active " else "") + (if Array.isArray(@col.class) then @col.class.join(' ') else @col.class || "")
           key++
           left+=col.width
       @scrollWidth = left
