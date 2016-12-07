@@ -4,19 +4,19 @@ grid2
     //- main body
     .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px")
       .fixedLeft(riot-style="transform:translate3d({fixedLeft.left}px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
-        gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",no-reorder,val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",class="{active:cell.active}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
+      gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",class="{cell.classes()}",no-reorder,val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
         
     //- fixed top
     .gridbody(ref="header",riot-style="height:{rowHeight}px;margin-right:15px")
       .header(riot-style="top:0px;left:0px;width:{scrollWidth}px;height:{rowHeight}px")
-        .headercell(each="{headers.main}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;") {text}
+        .headercell(each="{cell in headers.main}",class="{cell.classes}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{cell.width}px;height:{cell.rowHeight}px;") {cell.text}
     
     //- fixed left
     .gridbody(riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
       .fixedLeft(riot-style="transform:translate3d(0px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
         .header(riot-style="top:{0 - fixedLeft.top}px;left:0px;width:{fixedLeft.width}px;height:{rowHeight}px")
-          .headercell(each="{headers.fixed}",no-reorder,riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;") {text}
-        gridcelltag.cell(tag="{cell.tag}",no-reorder,data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",class="{active:cell.active}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
+          .headercell(each="{cell in headers.fixed}",class="{cell.classes}",no-reorder,riot-style="top:0px;left:{left}px;width:{cell.width}px;height:{cell.rowHeight}px;") {cell.text}
+          gridcelltag.cell(tag="{cell.tag}",class="{cell.classes()}",no-reorder,data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
   
     //- scroll area
     .gridbody(ref="overlay",onscroll='{scrolling}',riot-style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
@@ -166,6 +166,7 @@ grid2
           width:col.width
           text:col.label
           tag:col.tag
+          classes: if Array.isArray(col.class) then col.class.join(' ') else col.class
         left+=col.width
 
       key = 0 #every cell has unique key
@@ -186,6 +187,7 @@ grid2
             ridx:ridx
             key:key
             col:col
+            classes: -> (if @active then "active " else "") + (if Array.isArray(@col.class) then @col.class.join(' ') else @col.class)
           key++
           left+=col.width
       @scrollWidth = left
@@ -247,7 +249,7 @@ grid2
 
 
 gridcelltag
-  div(riot-tag="{opts.tag}")
+  div
     <yield />
     
   script(type="text/coffee").

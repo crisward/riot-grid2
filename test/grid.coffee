@@ -13,12 +13,12 @@ columns = []
 test = {}
 rows = null
 
-# id:i,first_name:randFirstname(),surname:randSurname(),age:randAge()
+# id:i,first_name:randFirstname(),surname:randSurname(),age:randAge(),name:{first:randFirstname(),last:randSurname()}
 
 columns = [
-  {field:"id",label:"#",width:20,fixed:true}
-  {field:"first_name",label:"First Name",width:100}
-  {field:"surname",label:"Surname",width:100}
+  {field:"id",label:"#",width:20,fixed:true,class:"identifier"}
+  {field:"first_name",label:"First Name",width:100,class:["name", "first"]}
+  {field:"surname",label:"Surname",width:100,class:"name sur"}
   {field:"age",label:"Age",width:100}
 ]
 
@@ -47,29 +47,43 @@ describe 'grid2',->
     expect(@node.textContent).to.contain(griddata[0].first_name)
     expect(@node.innerHTML).to.contain(griddata[0].surname)
 
+  it "should set classes", ->
+     expect(document.querySelectorAll('.headercell.identifier')[0].textContent).to.equal('#')
+     expect(document.querySelectorAll('.headercell.name.first')[0].textContent).to.equal('First Name')
+     expect(document.querySelectorAll('.headercell.name.sur')[0].textContent).to.equal('Surname')
+     expect(document.querySelectorAll('.cell.identifier')[0].textContent).to.equal(griddata[0].id+"")
+     expect(document.querySelectorAll('.cell.name.first')[0].textContent).to.equal(griddata[0].first_name)
+     expect(document.querySelectorAll('.cell.name.sur')[0].textContent).to.equal(griddata[0].surname)
+
   it "should render only enough cells needed",->
      expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
      expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
 
-  it "should render only enough rows after scrolling",->
+  it "should render only enough rows after scrolling", (done)->
     document.querySelector('[ref=overlay]').scrollTop = 1000
-    expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
-    expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+    setTimeout =>
+        expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
+        expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+        done()
    
-  it "should render only enough rows after scrolling (again)",->
+  it "should render only enough rows after scrolling (again)", (done) ->
     document.querySelector('.gridbody').scrollTop = 4389
-    expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
-    expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+    setTimeout =>
+        expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
+        expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)
+        done()
  
-  it "should pass events through overlay to grid below",->
+  it "should pass events through overlay to grid below",(done)->
     e = document.createEvent('MouseEvents')
     # e = simulant( 'click' )
     #e.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY)...
     if document.createEvent
       e.initMouseEvent('click', true, true, window, 1, 100, 50, 100, 50)
     simulant.fire(document.querySelector('[ref=overlay]'),e)
-    expect(spyclick.calledOnce).to.be.true
-    expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+    setTimeout ->
+      expect(spyclick.calledOnce).to.be.true
+      expect(spyclick.args[0][0][0]).to.eql(griddata[0])
+      done()
 
   it "should change class to active when cell is clicked",(done)->
     expect(@domnode.querySelectorAll('.active').length).to.equal(0)
@@ -115,7 +129,7 @@ describe 'grid2',->
         expect(@domnode.querySelectorAll('.active').length).to.equal(0)
         done()
 
-  it "should show custom tag",(done)->
+  it "should show custom tag with text value",(done)->
     expect(@domnode.querySelectorAll('.testcell').length).to.equal(0)
     columns[1].tag = "testcell"
     @tag.unmount(true)
@@ -123,6 +137,19 @@ describe 'grid2',->
     riot.update()
     setTimeout =>
       expect(@domnode.querySelectorAll('.testcell').length).to.be.gt(1)
+      expect(@domnode.querySelectorAll('.testcell')[0].textContent).to.equal(griddata[0].first_name)
+      done()
+
+  it "should show custom tag with object value",(done)->
+    expect(@domnode.querySelectorAll('.testcell-obj').length).to.equal(0)
+    columns[1].tag = "testcell-obj"
+    columns[1].field = "name"
+    @tag.unmount(true)
+    @tag = riot.mount('testtag',{griddata:griddata,columns:columns,gridheight:gridheight,testclick:spyclick})[0]
+    riot.update()
+    setTimeout =>
+      expect(@domnode.querySelectorAll('.testcell-obj').length).to.be.gt(1)
+      expect(@domnode.querySelectorAll('.testcell-obj')[0].textContent).to.equal("#{griddata[0].name.last}, #{griddata[0].name.first}")
       done()
 
 
