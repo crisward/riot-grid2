@@ -16,9 +16,9 @@ rows = null
 # id:i,first_name:randFirstname(),surname:randSurname(),age:randAge(),name:{first:randFirstname(),last:randSurname()}
 
 columns = [
-  {field:"id",label:"#",width:20,fixed:true}
-  {field:"first_name",label:"First Name",width:100}
-  {field:"surname",label:"Surname",width:100}
+  {field:"id",label:"#",width:20,fixed:true,class:"identifier"}
+  {field:"first_name",label:"First Name",width:100,class:["name", "first"]}
+  {field:"surname",label:"Surname",width:100,class:"name sur"}
   {field:"age",label:"Age",width:100}
 ]
 
@@ -46,6 +46,14 @@ describe 'grid2',->
     expect(document.querySelectorAll('.cell').length).to.be.gt(1)
     expect(@node.textContent).to.contain(griddata[0].first_name)
     expect(@node.innerHTML).to.contain(griddata[0].surname)
+
+  it "should set classes", ->
+     expect(document.querySelectorAll('.headercell.identifier')[0].textContent).to.equal('#')
+     expect(document.querySelectorAll('.headercell.name.first')[0].textContent).to.equal('First Name')
+     expect(document.querySelectorAll('.headercell.name.sur')[0].textContent).to.equal('Surname')
+     expect(document.querySelectorAll('.cell.identifier')[0].textContent).to.equal(griddata[0].id+"")
+     expect(document.querySelectorAll('.cell.name.first')[0].textContent).to.equal(griddata[0].first_name)
+     expect(document.querySelectorAll('.cell.name.sur')[0].textContent).to.equal(griddata[0].surname)
 
   it "should render only enough cells needed",->
      expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)

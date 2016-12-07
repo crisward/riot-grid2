@@ -48,15 +48,16 @@ The following keys can be used.
 |field	    |string  |yes       |The name of the field within your data object to display in this column
 |width	    |int	 |yes       |Width in pixels of this column
 |fixed	    |bool	 |no        |If this column should be fixed, or allowed to scroll horizontally 
-|tag   	    |string  |no		|name of tag you would like to use in the column (see below)
+|class      |string or array|no|CSS class(es) to set on cells of this column, in addition to the automatic `.cell` / `.headercell`
+|tag   	    |string  |no		|Name of tag you would like to use in the column (see below)
 
 Example
 
 ```javascript
 var columns = [
-    {label:'#',field:'id',width:50,fixed:true},
-    {label:'name',field:"name1",width:120,fixed:true},
-    {label:'name2',field:"name2",width:120},
+    {label:'#',field:'id',width:50,fixed:true,class:'identifier'},
+    {label:'name',field:"name1",width:120,fixed:true,class:'name primary'},
+    {label:'name2',field:"name2",width:120,class:['name','secondary']},
     {label:"popularity",field:"popularity",width:200,tag:"image-cell"}
 ]
 ```
