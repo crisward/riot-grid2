@@ -85,6 +85,17 @@ describe 'grid2',->
       expect(spyclick.args[0][0][0]).to.eql(griddata[0])
       done()
 
+  it "should do nothing when mouse position doesn't hit an element",(done)-> # in particular it shouldn't crash
+    e = document.createEvent('MouseEvents')
+    # e = simulant( 'click' )
+    #e.initMouseEvent(type, canBubble, cancelable, view, detail, screenX, screenY, clientX, clientY)...
+    if document.createEvent
+      e.initMouseEvent('click', true, true, window, 1, -1000, 50, 1000, 50)
+    simulant.fire(document.querySelector('[ref=overlay]'),e)
+    setTimeout ->
+      expect(spyclick.calledOnce).to.be.false
+      done()
+
   it "should change class to active when cell is clicked",(done)->
     expect(@domnode.querySelectorAll('.active').length).to.equal(0)
     simulant.fire(document.querySelector('.cell'),'click')

@@ -146,7 +146,7 @@ grid2
       e.preventDefault()
       @refs.overlay.style.display = "none"
       elem = document.elementFromPoint(e.pageX,e.pageY)
-      elem.dispatchEvent(event)
+      elem?.dispatchEvent(event)
       @refs.overlay.style.display = "block"
       @refs.overlay.scrollTop = top
      
