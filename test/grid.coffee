@@ -67,7 +67,7 @@ describe 'grid2',->
         done()
    
   it "should render only enough rows after scrolling (again)", (done) ->
-    document.querySelector('.gridbody').scrollTop = 4389
+    document.querySelector('.gridbody').scrollTop = 4380
     setTimeout =>
         expect(document.querySelectorAll('.cell').length).to.be.lt((gridheight/40)*4)
         expect(document.querySelectorAll('.cell').length).to.be.gt((gridheight/40)*3)

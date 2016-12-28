@@ -1,8 +1,12 @@
 grid2
   .gridwrap(style="height:{opts.height}px")
-  
+    //- scroll area
+    .gridbody(ref="overlay",onscroll="{scrollbar}",riot-style="overflow:auto;left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
+      div(if="{!measured}",style="height:100000px")
+      .scrollArea(if="{measured}",riot-style="background:rgba(0,0,0,0.005);width:{scrollWidth-fixedLeft.width}px;height:{scrollHeight-rowHeight}px;")
+
     //- main body
-    .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px")
+    .gridbody(ref="mainbody",riot-style="left:{fixedLeft.width}px;top:{rowHeight}px;bottom:{scrollbarwidth}px;right:{scrollbarwidth}px")
       .fixedLeft(riot-style="transform:translate3d({fixedLeft.left}px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
         gridcelltag.cell(tag="{cell.tag}",data="{parent.opts.data}",class="{cell.classes()}",no-reorder,val="{cell.text}",cell="{cell}",each="{cell in visCells.main}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
         
@@ -18,10 +22,6 @@ grid2
           .headercell(each="{headers.fixed}",no-reorder,riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;",class="{classes}") {text}
         gridcelltag.cell(tag="{cell.tag}",class="{cell.classes()}",no-reorder,data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
   
-    //- scroll area
-    .gridbody(ref="overlay",riot-style="overflow:auto;left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;pointer-events:none;")
-      .scrollArea(riot-style="background:rgba(0,0,0,0.005);width:{scrollWidth-fixedLeft.width}px;height:{scrollHeight-rowHeight}px;")
-
   style(type="text/stylus"). 
     grid2
       display block
@@ -82,6 +82,7 @@ grid2
       @rows=[]
       @scrollevents = ['DOMMouseScroll','mousewheel','touchmove']
       @point = null
+      @measured = false
       
     @on 'mount',->
       @rowHeight = +opts.rowheight || 40
@@ -91,6 +92,8 @@ grid2
         @refs.fixedleft.addEventListener(ev,@scrolling.bind(@,true,false),false)
       @refs.mainbody.addEventListener('touchstart',@scrollstart,false)
       @refs.fixedleft.addEventListener('touchstart',@scrollstart,false)
+      @scrollbarwidth = @refs.overlay.offsetWidth - @refs.overlay.scrollWidth
+      @measured = true
       @update()
       
     @on 'before-unmount',->
@@ -202,6 +205,11 @@ grid2
       @refs.header.scrollLeft = @refs.overlay.scrollLeft
       @update()
 
+    @scrollbar = (e)=>
+      e.preventUpdate = true
+      @refs.header.scrollLeft = @refs.overlay.scrollLeft
+      @update() 
+
     @scrollstart = (e)=>
       @point = {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}
 
@@ -252,7 +260,7 @@ grid2
           tag = show.tag || "notag"
           if unused[tag]?.length > 0 then visible[unused[tag].pop()] = show else visible.push(show)
       return visible
-
+  
 
 gridcelltag
   div(if="{!opts.tag}")
