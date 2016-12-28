@@ -12,15 +12,15 @@ grid2
         .headercell(each="{headers.main}",no-reorder,riot-style="transform:translate3d({left}px,0px,0px); backface-visibility: hidden;width:{width}px;height:{rowHeight}px;",class="{classes}") {text}
     
     //- fixed left
-    .gridbody(riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
+    .gridbody(ref="fixedleft",riot-style="width:{fixedLeft.width}px;height:{opts.height-2}px")
       .fixedLeft(riot-style="transform:translate3d(0px,{fixedLeft.top}px,0px);backface-visibility: hidden;width:{fixedLeft.width}px;bottom:1px;z-index:2;")
         .header(riot-style="top:{0 - fixedLeft.top}px;left:0px;width:{fixedLeft.width}px;height:{rowHeight}px")
           .headercell(each="{headers.fixed}",no-reorder,riot-style="top:0px;left:{left}px;width:{width}px;height:{rowHeight}px;",class="{classes}") {text}
         gridcelltag.cell(tag="{cell.tag}",class="{cell.classes()}",no-reorder,data="{parent.opts.data}",val="{cell.text}",cell="{cell}",each="{cell in visCells.fixed}",onclick="{parent.handleClick}",riot-style="position: absolute;left:{cell.left}px;top:{cell.top}px;width:{cell.width}px;height:{parent.rowHeight}px;") {cell.text}
   
     //- scroll area
-    .gridbody(ref="overlay",onscroll='{scrolling}',riot-style="overflow:auto;left:0px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;")
-      .scrollArea(riot-style="background:rgba(0,0,0,0.005);width:{scrollWidth}px;height:{scrollHeight-rowHeight}px;")
+    .gridbody(ref="overlay",riot-style="overflow:auto;left:{fixedLeft.width}px;top:{rowHeight}px;bottom:0px;-webkit-overflow-scrolling: touch;pointer-events:none;")
+      .scrollArea(riot-style="background:rgba(0,0,0,0.005);width:{scrollWidth-fixedLeft.width}px;height:{scrollHeight-rowHeight}px;")
 
   style(type="text/stylus"). 
     grid2
@@ -80,16 +80,25 @@ grid2
       @activeCells = []
       @activeRows = []
       @rows=[]
-      @pushevents = ['click','dblclick','mousedown','mouseup','mousemove']
+      @scrollevents = ['DOMMouseScroll','mousewheel','touchmove']
+      @point = null
       
     @on 'mount',->
       @rowHeight = +opts.rowheight || 40
       @gridbody = @root.querySelectorAll(".gridbody")
-      @pushevents.forEach (eventname)=> @refs.overlay.addEventListener(eventname,@pushThroughEvent)
+      @scrollevents.forEach (ev)=>
+        @refs.mainbody.addEventListener(ev,@scrolling.bind(@,true,true),false)
+        @refs.fixedleft.addEventListener(ev,@scrolling.bind(@,true,false),false)
+      @refs.mainbody.addEventListener('touchstart',@scrollstart,false)
+      @refs.fixedleft.addEventListener('touchstart',@scrollstart,false)
       @update()
       
     @on 'before-unmount',->
-      @pushevents.forEach (eventname)=> @refs.overlay.removeEventListener(eventname,@pushThroughEvent)
+      @scrollevents.forEach (ev)=> 
+        @refs.mainbody.removeEventListener(ev,@scrolling,false)
+        @refs.fixedleft.removeEventListener(ev,@scrolling,false)
+      @refs.mainbody.removeEventListener('touchstart',@scrollstart,false)
+      @refs.fixedleft.removeEventListener('touchstart',@scrollstart,false)
  
     @on 'update',->
       return if !@gridbody || !opts.data || !opts.columns
@@ -133,23 +142,7 @@ grid2
       @activeCells.forEach (cell)-> cell.active = false
       @activeCells.length = 0
       @activeRows.length = 0
-    
-    @pushThroughEvent= (e)=>
-      e.stopPropagation()
-      e.preventUpdate = true
-      top = @refs.overlay.scrollTop #fix ie scrolling issue during click
-      try
-        event = new MouseEvent(e.type, e)
-      catch 
-        event = document.createEvent('MouseEvents')
-        event.initMouseEvent(e.type, true,true,window,0,e.screenX,e.screenY,e.clientX,e.clientY,e.ctrlKey,e.altKey,e.shiftKey,e.metaKey,e.button,e.target)
-      e.preventDefault()
-      @refs.overlay.style.display = "none"
-      elem = document.elementFromPoint(e.pageX,e.pageY)
-      elem?.dispatchEvent(event)
-      @refs.overlay.style.display = "block"
-      @refs.overlay.scrollTop = top
-     
+         
     calcPos= => # work out co-ordinates of all cells
       left = 0
       top = 0
@@ -194,10 +187,23 @@ grid2
       @scrollHeight = top+@rowHeight
       @update()
       
-    @scrolling = (e)=>
+    @scrolling = (vert,horiz,e)=>
       e.preventUpdate = true
+      e.preventDefault()
+      if @point
+        point2 = {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}
+        deltaX = @point.x - point2.x
+        deltaY = @point.y - point2.y
+        @point = point2
+      else
+        {deltaX,deltaY} = e
+      @refs.overlay.scrollTop = @refs.overlay.scrollTop + deltaY if vert
+      @refs.overlay.scrollLeft = @refs.overlay.scrollLeft + deltaX if horiz
       @refs.header.scrollLeft = @refs.overlay.scrollLeft
       @update()
+
+    @scrollstart = (e)=>
+      @point = {x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}
 
     calcArea = (gridbody)->
       top:gridbody.scrollTop
@@ -249,9 +255,11 @@ grid2
 
 
 gridcelltag
-  div
+  div(if="{!opts.tag}")
     <yield />
-    
+  div(if="{opts.tag}",data-is="{opts.tag}")
+    <yield />
+
   script(type="text/coffee").
     @prevtag = null
 

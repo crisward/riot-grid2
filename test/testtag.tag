@@ -15,4 +15,4 @@ testcell
   div.testcell {opts.val}
 
 testcell-obj
-  div.testcell-obj {opts.val.last}, {opts.val.first}
+  div.testcell-obj(if="{opts.val}") {opts.val.last}, {opts.val.first}
