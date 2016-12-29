@@ -80,7 +80,7 @@ grid2
       @activeCells = []
       @activeRows = []
       @rows=[]
-      @scrollevents = ['DOMMouseScroll','mousewheel','touchmove']
+      @scrollevents = ['DOMMouseScroll','wheel','touchmove']
       @point = null
       @measured = false
       
@@ -200,7 +200,6 @@ grid2
         @point = point2
       else
         {deltaX,deltaY} = e
-      deltaY = e.detail*2 if !deltaY #firefox hack, only works vert
       @refs.overlay.scrollTop = @refs.overlay.scrollTop + deltaY if vert && deltaY != 0
       @refs.overlay.scrollLeft = @refs.overlay.scrollLeft + deltaX if horiz && deltaX != 0
       @refs.header.scrollLeft = @refs.overlay.scrollLeft
