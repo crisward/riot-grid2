@@ -16,3 +16,6 @@ testcell
 
 testcell-obj
   div.testcell-obj(if="{opts.val}") {opts.val.last}, {opts.val.first}
+
+testimage
+  img.testimg(src="{opts.val}")

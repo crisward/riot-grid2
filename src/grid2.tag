@@ -113,8 +113,13 @@ grid2
         @columns = opts.columns
         @rows=[]
         calcPos()
+        # reset and update to issue #21
+        if @visCells && ( @visCells.fixed.length || @visCells.main.length )
+          @visCells = {fixed:[],main:[]}
+          setTimeout => @update() 
+          return      
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
-      if @visCells.main.length == 0
+      else if @visCells.main.length == 0
         @visCells = calcVisible(@rows,@refs.overlay,@rowHeight)
       else
         @visCells = reCalc(@visCells,@rows,@refs.overlay,@rowHeight)
@@ -247,7 +252,7 @@ grid2
       unused = {}
       viskeys = []
       for cell,idx in visible
-        tag = cell.tag || "notag"
+        tag = cell.tag || "div"
         # if cell is outside of viewable area, push it onto an unused tag array
         if cell.left > area.right || cell.right < area.left || cell.bottom < area.top || cell.top > area.bottom
           unused[tag] = [] if !unused[tag]
@@ -257,7 +262,7 @@ grid2
           viskeys.push cell.key 
       for show in newcells
         if viskeys.indexOf(show.key) == -1 #if new cell us not on viskeys, try and reuse a tag
-          tag = show.tag || "notag"
+          tag = show.tag || "div"
           if unused[tag]?.length > 0 then visible[unused[tag].pop()] = show else visible.push(show)
       return visible
   
@@ -268,7 +273,7 @@ gridcelltag
   div(if="{opts.tag}",data-is="{opts.tag}")
     <yield />
 
-  script(type="text/coffee").
+  script(type="coffee").
     @prevtag = null
 
     @on 'mount',->
