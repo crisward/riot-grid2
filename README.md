@@ -1,7 +1,7 @@
 <img src="https://cdn.rawgit.com/crisward/riot-grid2/master/grid-logo2.svg" height="140"/>
 
 [![Build Status](https://travis-ci.org/crisward/riot-grid2.svg?branch=master)](https://travis-ci.org/crisward/riot-grid2)
-[![Coverage Status](https://coveralls.io/repos/github/crisward/riot-grid2/badge.svg?branch=master&v=3)](https://coveralls.io/github/crisward/riot-grid2?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/crisward/riot-grid2/badge.svg?branch=master&v=3.2)](https://coveralls.io/github/crisward/riot-grid2?branch=master)
 
 [riot-grid](https://github.com/crisward/riot-grid) Version 2.
 With new api and optimised for high column numbers.
